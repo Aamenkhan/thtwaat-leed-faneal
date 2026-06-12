@@ -1,0 +1,747 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Thtwaat Technology Solutions — Apps · Web · AI · Digital Marketing</title>
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Familjen+Grotesk:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#060608;
+  --bg2:#0d0d14;
+  --bg3:#141420;
+  --border:rgba(255,255,255,0.07);
+  --border2:rgba(255,255,255,0.13);
+  --text:#EEEAF2;
+  --muted:#777899;
+  --muted2:#4a4a6a;
+  --gold:#F0B429;
+  --gold2:#FFD166;
+  --teal:#06D6A0;
+  --purple:#9B72CF;
+  --red:#EF4444;
+  --font:'Familjen Grotesk',sans-serif;
+  --mono:'Space Mono',monospace;
+  --r:10px;
+  --r2:16px;
+}
+html{scroll-behavior:smooth;font-size:16px}
+body{background:var(--bg);color:var(--text);font-family:var(--font);overflow-x:hidden;line-height:1.6}
+a{color:inherit;text-decoration:none}
+button{cursor:pointer;font-family:var(--font)}
+img{display:block;max-width:100%}
+
+/* NOISE OVERLAY */
+body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");pointer-events:none;z-index:9999;opacity:.35}
+
+/* ══ GLOW ORBS ══ */
+.orb{position:fixed;border-radius:50%;filter:blur(120px);pointer-events:none;z-index:0}
+.orb1{width:600px;height:600px;background:rgba(240,180,41,0.07);top:-200px;right:-200px}
+.orb2{width:500px;height:500px;background:rgba(6,214,160,0.05);bottom:-150px;left:-150px}
+.orb3{width:400px;height:400px;background:rgba(155,114,207,0.06);top:50%;left:40%}
+
+/* ══ AUTH GATE ══ */
+#authGate{position:fixed;inset:0;background:var(--bg);z-index:1000;display:flex;align-items:center;justify-content:center;padding:1rem}
+#authGate.hidden{display:none}
+.auth-box{width:100%;max-width:420px;position:relative;z-index:1}
+.auth-logo{font-family:var(--mono);font-size:1.4rem;font-weight:700;margin-bottom:2.5rem;color:var(--gold)}
+.auth-logo span{color:var(--text)}
+.auth-headline{font-size:clamp(1.6rem,4vw,2.2rem);font-weight:700;line-height:1.15;margin-bottom:.5rem;letter-spacing:-.5px}
+.auth-sub{color:var(--muted);font-size:.95rem;margin-bottom:2rem}
+.auth-tabs{display:flex;background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:3px;gap:3px;margin-bottom:1.75rem}
+.auth-tab{flex:1;padding:.55rem;background:none;border:none;color:var(--muted);font-family:var(--font);font-size:.875rem;font-weight:600;border-radius:6px;transition:all .2s}
+.auth-tab.on{background:var(--gold);color:#000}
+.fld{margin-bottom:1rem}
+.fld label{display:block;font-family:var(--mono);font-size:.72rem;color:var(--muted);margin-bottom:5px;text-transform:uppercase;letter-spacing:.8px}
+.fld input{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:.75rem 1rem;color:var(--text);font-family:var(--font);font-size:.95rem;outline:none;transition:border-color .2s}
+.fld input:focus{border-color:rgba(240,180,41,.5)}
+.fld input::placeholder{color:var(--muted2)}
+.auth-submit{width:100%;padding:.9rem;background:var(--gold);color:#000;border:none;border-radius:8px;font-family:var(--font);font-weight:700;font-size:1rem;margin-top:.5rem;transition:opacity .2s,transform .15s}
+.auth-submit:hover{opacity:.88;transform:translateY(-1px)}
+.auth-note{text-align:center;font-size:.82rem;color:var(--muted);margin-top:1rem}
+.auth-note a{color:var(--gold);font-weight:600;cursor:pointer}
+.auth-err{background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.3);border-radius:7px;padding:.65rem 1rem;font-size:.82rem;color:#fca5a5;margin-bottom:1rem;display:none}
+
+/* ══ NAV ══ */
+nav{position:fixed;top:0;left:0;right:0;z-index:500;height:60px;display:flex;align-items:center;justify-content:space-between;padding:0 5%;background:rgba(6,6,8,.82);backdrop-filter:blur(16px);border-bottom:1px solid var(--border)}
+.nav-logo{font-family:var(--mono);font-weight:700;font-size:1.05rem;color:var(--gold)}
+.nav-logo span{color:var(--text)}
+.nav-right{display:flex;align-items:center;gap:1rem}
+.nav-links{display:flex;align-items:center;gap:1.5rem}
+.nav-links a{font-size:.85rem;font-weight:500;color:var(--muted);transition:color .2s}
+.nav-links a:hover{color:var(--text)}
+.nav-user{display:flex;align-items:center;gap:8px;background:var(--bg3);border:1px solid var(--border);border-radius:100px;padding:.35rem .9rem;font-size:.82rem;font-weight:600}
+.nav-dot{width:7px;height:7px;border-radius:50%;background:var(--teal);flex-shrink:0}
+.nav-logout{background:none;border:none;color:var(--muted);font-size:.75rem;padding:0;transition:color .2s}
+.nav-logout:hover{color:var(--red)}
+.nav-cta{background:var(--gold);color:#000;border:none;border-radius:7px;padding:.5rem 1.1rem;font-family:var(--font);font-weight:700;font-size:.85rem;transition:opacity .2s}
+.nav-cta:hover{opacity:.85}
+@media(max-width:680px){.nav-links{display:none}}
+
+/* ══ HERO ══ */
+.hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:80px 5% 60px;text-align:center;position:relative;z-index:1}
+.hero-tag{display:inline-flex;align-items:center;gap:8px;background:rgba(240,180,41,.09);border:1px solid rgba(240,180,41,.25);color:var(--gold);border-radius:100px;padding:.38rem 1rem;font-family:var(--mono);font-size:.72rem;letter-spacing:.8px;text-transform:uppercase;margin-bottom:1.75rem}
+.hero h1{font-size:clamp(2.8rem,7vw,5.5rem);font-weight:700;letter-spacing:-2.5px;line-height:1.02;margin-bottom:1.25rem;max-width:900px}
+.hero h1 .hi{color:var(--gold)}
+.hero h1 .h2{color:var(--teal)}
+.hero-desc{font-size:1.1rem;color:var(--muted);max-width:560px;margin:0 auto 2.5rem;line-height:1.8;font-weight:400}
+.hero-ctas{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;margin-bottom:3.5rem}
+.btn-g{background:var(--gold);color:#000;border:none;border-radius:9px;padding:.85rem 1.75rem;font-family:var(--font);font-weight:700;font-size:1rem;transition:opacity .2s,transform .15s;display:inline-block}
+.btn-g:hover{opacity:.87;transform:translateY(-2px)}
+.btn-o{background:transparent;color:var(--text);border:1px solid var(--border2);border-radius:9px;padding:.85rem 1.75rem;font-family:var(--font);font-weight:500;font-size:1rem;transition:border-color .2s,background .2s;display:inline-block}
+.btn-o:hover{border-color:rgba(255,255,255,.3);background:rgba(255,255,255,.04)}
+.btn-wa{background:#25D366;color:#fff;border:none;border-radius:9px;padding:.85rem 1.75rem;font-family:var(--font);font-weight:700;font-size:1rem;display:inline-flex;align-items:center;gap:8px;transition:opacity .2s,transform .15s}
+.btn-wa:hover{opacity:.88;transform:translateY(-2px)}
+.hero-stats{display:flex;gap:2.5rem;justify-content:center;padding-top:2.5rem;border-top:1px solid var(--border);flex-wrap:wrap}
+.stat-item{text-align:center}
+.stat-n{font-family:var(--mono);font-size:1.9rem;font-weight:700;color:var(--text)}
+.stat-l{font-size:.78rem;color:var(--muted);margin-top:3px;text-transform:uppercase;letter-spacing:.5px}
+
+/* ══ SECTION BASE ══ */
+section{position:relative;z-index:1;padding:6rem 5%}
+.sec-tag{font-family:var(--mono);font-size:.72rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold);margin-bottom:.8rem}
+.sec-h{font-size:clamp(1.8rem,4vw,2.8rem);font-weight:700;letter-spacing:-1px;line-height:1.1;margin-bottom:.8rem}
+.sec-sub{color:var(--muted);font-size:.98rem;max-width:500px;line-height:1.8}
+
+/* ══ HOW WE WORK (VIDEO) ══ */
+.video-section{background:var(--bg2);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+.video-wrap{margin-top:3rem;position:relative}
+.yt-frame{position:relative;padding-bottom:56.25%;height:0;overflow:hidden;border-radius:var(--r2);border:1px solid var(--border2)}
+.yt-frame iframe{position:absolute;top:0;left:0;width:100%;height:100%;border:none;border-radius:var(--r2)}
+.yt-placeholder{position:absolute;inset:0;background:var(--bg3);border-radius:var(--r2);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1rem;cursor:pointer}
+.yt-play-btn{width:72px;height:72px;background:var(--gold);border-radius:50%;display:flex;align-items:center;justify-content:center;transition:transform .2s,opacity .2s}
+.yt-play-btn:hover{transform:scale(1.08)}
+.yt-play-btn svg{width:28px;height:28px;fill:#000;margin-left:4px}
+.yt-label{font-weight:600;font-size:1rem;color:var(--text)}
+.yt-sublabel{font-size:.8rem;color:var(--muted)}
+.video-id-input{margin-top:1.5rem;display:flex;gap:10px;max-width:480px}
+.video-id-input input{flex:1;background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:.65rem 1rem;color:var(--text);font-family:var(--mono);font-size:.82rem;outline:none}
+.video-id-input input:focus{border-color:rgba(240,180,41,.5)}
+.video-id-input button{background:var(--gold);color:#000;border:none;border-radius:8px;padding:.65rem 1rem;font-family:var(--font);font-weight:700;font-size:.82rem}
+.video-points{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem;margin-top:2.5rem}
+.vp{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:1.25rem;display:flex;align-items:flex-start;gap:.75rem}
+.vp-icon{font-size:1.4rem;flex-shrink:0;margin-top:2px}
+.vp-t{font-weight:600;font-size:.9rem;margin-bottom:.25rem}
+.vp-d{font-size:.8rem;color:var(--muted)}
+
+/* ══ LIVE APPS ══ */
+.apps-section{background:var(--bg)}
+.apps-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1.25rem;margin-top:3rem}
+.app-card{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r2);padding:1.75rem;position:relative;overflow:hidden;transition:border-color .25s,transform .25s;display:flex;flex-direction:column}
+.app-card::before{content:'';position:absolute;top:0;right:0;width:140px;height:140px;border-radius:50%;filter:blur(60px);pointer-events:none}
+.app-card.gold::before{background:rgba(240,180,41,.1)}
+.app-card.teal::before{background:rgba(6,214,160,.1)}
+.app-card.purple::before{background:rgba(155,114,207,.1)}
+.app-card:hover{border-color:var(--border2);transform:translateY(-3px)}
+.app-icon{width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.4rem;margin-bottom:1.25rem;flex-shrink:0}
+.app-icon.g{background:rgba(240,180,41,.12);border:1px solid rgba(240,180,41,.2)}
+.app-icon.t{background:rgba(6,214,160,.1);border:1px solid rgba(6,214,160,.15)}
+.app-icon.p{background:rgba(155,114,207,.1);border:1px solid rgba(155,114,207,.15)}
+.app-name{font-weight:700;font-size:1.1rem;margin-bottom:.4rem}
+.app-desc{font-size:.85rem;color:var(--muted);line-height:1.7;flex:1;margin-bottom:1.25rem}
+.app-tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:1.25rem}
+.tag{background:rgba(255,255,255,.05);border:1px solid var(--border);border-radius:100px;padding:3px 10px;font-size:.72rem;font-weight:500;color:var(--muted)}
+.app-link{display:inline-flex;align-items:center;gap:6px;background:var(--bg2);border:1px solid var(--border2);border-radius:8px;padding:.55rem 1rem;font-size:.82rem;font-weight:600;color:var(--text);transition:background .2s,border-color .2s;align-self:flex-start}
+.app-link:hover{background:var(--bg3);border-color:rgba(255,255,255,.25)}
+.live-dot{width:7px;height:7px;border-radius:50%;background:var(--teal);animation:pulse 1.8s infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(1.3)}}
+
+/* ══ SERVICES / PRICING ══ */
+.pricing-section{background:var(--bg2);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+.pricing-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1.25rem;margin-top:3rem}
+.p-card{background:var(--bg);border:1px solid var(--border);border-radius:var(--r2);padding:1.75rem 1.5rem;display:flex;flex-direction:column;position:relative;transition:transform .2s,border-color .2s}
+.p-card:hover{transform:translateY(-3px);border-color:var(--border2)}
+.p-card.hot{border-color:var(--gold);background:linear-gradient(135deg,rgba(240,180,41,.05) 0%,var(--bg) 50%)}
+.p-hot-badge{position:absolute;top:-1px;left:50%;transform:translateX(-50%);background:var(--gold);color:#000;font-size:.68rem;font-weight:800;padding:4px 14px;border-radius:0 0 8px 8px;letter-spacing:.5px;text-transform:uppercase;white-space:nowrap}
+.p-emoji{font-size:2rem;margin-bottom:1rem}
+.p-name{font-weight:700;font-size:1.1rem;margin-bottom:.3rem}
+.p-tagline{font-size:.82rem;color:var(--muted);margin-bottom:1.25rem;line-height:1.6}
+.p-price{font-family:var(--mono);font-size:1.9rem;font-weight:700;margin-bottom:.25rem;color:var(--text)}
+.p-price small{font-size:.85rem;font-weight:400;color:var(--muted)}
+.p-period{font-size:.78rem;color:var(--muted);margin-bottom:1.5rem}
+.p-feats{list-style:none;margin-bottom:1.75rem;flex:1}
+.p-feats li{font-size:.83rem;color:var(--muted);padding:5px 0;padding-left:1.2rem;position:relative;border-bottom:1px solid var(--border)}
+.p-feats li:last-child{border:none}
+.p-feats li::before{content:'✓';position:absolute;left:0;color:var(--teal);font-weight:700}
+.p-btn{padding:.8rem;border-radius:8px;font-family:var(--font);font-weight:700;font-size:.9rem;border:none;transition:opacity .2s,transform .15s;text-align:center}
+.p-btn:hover{opacity:.85;transform:translateY(-1px)}
+.p-btn.solid{background:var(--gold);color:#000}
+.p-btn.outline{background:transparent;color:var(--text);border:1px solid var(--border2)}
+.p-btn.wa{background:#25D366;color:#fff}
+
+/* ══ FREE MVP ══ */
+.mvp-section{background:var(--bg)}
+.mvp-box{background:var(--bg3);border:1px solid var(--border2);border-radius:var(--r2);padding:3rem;display:flex;gap:3rem;align-items:center;flex-wrap:wrap;margin-top:3rem;position:relative;overflow:hidden}
+.mvp-box::before{content:'FREE';position:absolute;right:-20px;top:-20px;font-family:var(--mono);font-size:6rem;font-weight:700;color:rgba(240,180,41,.04);pointer-events:none;line-height:1}
+.mvp-content{flex:1;min-width:260px}
+.mvp-content h3{font-size:1.6rem;font-weight:700;margin-bottom:.75rem;letter-spacing:-.5px}
+.mvp-content p{color:var(--muted);line-height:1.8;margin-bottom:1.5rem;font-size:.95rem}
+.mvp-includes{list-style:none}
+.mvp-includes li{font-size:.85rem;padding:5px 0;padding-left:1.25rem;position:relative;color:var(--muted)}
+.mvp-includes li::before{content:'→';position:absolute;left:0;color:var(--gold)}
+.mvp-side{display:flex;flex-direction:column;gap:1rem;min-width:220px}
+.mvp-wa-btn{display:flex;align-items:center;justify-content:center;gap:10px;background:#25D366;color:#fff;border:none;border-radius:10px;padding:1rem 1.5rem;font-family:var(--font);font-weight:700;font-size:1rem;transition:opacity .2s,transform .15s;text-align:center;text-decoration:none}
+.mvp-wa-btn:hover{opacity:.88;transform:translateY(-2px)}
+.mvp-wa-icon{font-size:1.3rem}
+.mvp-note{font-size:.78rem;color:var(--muted);text-align:center;line-height:1.6}
+
+/* ══ RAZORPAY MODAL ══ */
+.modal-ov{position:fixed;inset:0;background:rgba(0,0,0,.85);backdrop-filter:blur(8px);z-index:800;display:flex;align-items:center;justify-content:center;padding:1rem;opacity:0;pointer-events:none;transition:opacity .25s}
+.modal-ov.open{opacity:1;pointer-events:all}
+.modal-box{background:var(--bg2);border:1px solid var(--border2);border-radius:18px;padding:2.5rem;width:100%;max-width:440px;transform:scale(.96) translateY(10px);transition:transform .25s}
+.modal-ov.open .modal-box{transform:scale(1) translateY(0)}
+.m-close{position:absolute;top:1rem;right:1rem;background:none;border:none;color:var(--muted);font-size:1.5rem;line-height:1;padding:4px 8px;transition:color .2s}
+.m-close:hover{color:var(--text)}
+.modal-box{position:relative}
+.m-h{font-weight:700;font-size:1.4rem;letter-spacing:-.4px;margin-bottom:.3rem}
+.m-sub{font-size:.85rem;color:var(--muted);margin-bottom:1.75rem}
+.pkg-opts{display:flex;flex-direction:column;gap:8px;margin-bottom:1.5rem}
+.pkg-opt{background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:8px;padding:.9rem 1rem;display:flex;align-items:center;gap:10px;cursor:pointer;transition:border-color .2s,background .2s}
+.pkg-opt:hover,.pkg-opt.on{border-color:var(--gold);background:rgba(240,180,41,.06)}
+.pkg-opt input{accent-color:var(--gold);flex-shrink:0}
+.pkg-on{flex:1}
+.pkg-nm{font-weight:600;font-size:.88rem}
+.pkg-pr{font-size:.78rem;color:var(--gold);font-weight:600;margin-top:2px}
+.m-submit{width:100%;padding:.9rem;background:var(--gold);color:#000;border:none;border-radius:8px;font-family:var(--font);font-weight:700;font-size:.95rem;margin-top:.5rem;transition:opacity .2s}
+.m-submit:hover{opacity:.87}
+.m-success{background:rgba(6,214,160,.08);border:1px solid rgba(6,214,160,.25);border-radius:8px;padding:.85rem 1rem;font-size:.85rem;color:var(--teal);margin-top:1rem;display:none}
+.m-safe{text-align:center;font-size:.73rem;color:var(--muted);margin-top:.75rem}
+
+/* ══ FOOTER ══ */
+footer{padding:2.5rem 5%;border-top:1px solid var(--border);position:relative;z-index:1}
+.footer-inner{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1.5rem}
+.f-logo{font-family:var(--mono);font-weight:700;font-size:1rem;color:var(--gold)}
+.f-logo span{color:var(--muted)}
+.f-links{display:flex;gap:1.5rem;flex-wrap:wrap}
+.f-links a{font-size:.82rem;color:var(--muted);transition:color .2s}
+.f-links a:hover{color:var(--text)}
+.f-copy{font-size:.75rem;color:var(--muted2);text-align:center;margin-top:2rem}
+
+/* ══ SCROLL REVEAL ══ */
+.rev{opacity:0;transform:translateY(22px);transition:opacity .65s ease,transform .65s ease}
+.rev.in{opacity:1;transform:none}
+
+/* ══ RESPONSIVE ══ */
+@media(max-width:600px){
+  .hero h1{letter-spacing:-1.5px}
+  .hero-stats{gap:1.5rem}
+  .mvp-box{padding:2rem}
+  .pricing-grid,.apps-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- ORBS -->
+<div class="orb orb1"></div>
+<div class="orb orb2"></div>
+<div class="orb orb3"></div>
+
+<!-- ══════════════════════════════════
+     AUTH GATE — shown first
+═══════════════════════════════════ -->
+<div id="authGate">
+  <div class="auth-box">
+    <div class="auth-logo">THTWAAT<span>.tech</span></div>
+    <h1 class="auth-headline">Start Building Your<br/>Digital Future</h1>
+    <p class="auth-sub">Create a free account to explore services, book a project, or chat with us directly.</p>
+    <div class="auth-tabs">
+      <button class="auth-tab on" id="aTabLogin" onclick="authSwitch('login')">Login</button>
+      <button class="auth-tab" id="aTabSignup" onclick="authSwitch('signup')">Sign Up</button>
+    </div>
+    <div id="authErr" class="auth-err"></div>
+    <!-- LOGIN -->
+    <div id="aLogin">
+      <div class="fld"><label>Email</label><input type="email" id="aLEmail" placeholder="you@email.com" onkeydown="if(event.key==='Enter')doLogin()"/></div>
+      <div class="fld"><label>Password</label><input type="password" id="aLPass" placeholder="Your password" onkeydown="if(event.key==='Enter')doLogin()"/></div>
+      <button class="auth-submit" onclick="doLogin()">Login to Account →</button>
+      <p class="auth-note">New here? <a onclick="authSwitch('signup')">Create free account</a></p>
+    </div>
+    <!-- SIGNUP -->
+    <div id="aSignup" style="display:none">
+      <div class="fld"><label>Full Name</label><input type="text" id="aSName" placeholder="Your name"/></div>
+      <div class="fld"><label>Email</label><input type="email" id="aSEmail" placeholder="you@email.com"/></div>
+      <div class="fld"><label>Phone (WhatsApp)</label><input type="tel" id="aSPhone" placeholder="+91 98765 43210"/></div>
+      <div class="fld"><label>Password</label><input type="password" id="aSPass" placeholder="Min 8 characters" onkeydown="if(event.key==='Enter')doSignup()"/></div>
+      <button class="auth-submit" onclick="doSignup()">Create Account & Enter →</button>
+      <p class="auth-note">Already a member? <a onclick="authSwitch('login')">Login</a></p>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════
+     MAIN SITE (locked behind auth)
+═══════════════════════════════════ -->
+<div id="mainSite" style="display:none">
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">TT<span>.tech</span></div>
+  <div class="nav-links">
+    <a href="#how">How It Works</a>
+    <a href="#apps">Live Apps</a>
+    <a href="#pricing">Pricing</a>
+    <a href="#mvp">Free MVP</a>
+  </div>
+  <div class="nav-right">
+    <div class="nav-user"><div class="nav-dot"></div><span id="navUName">User</span></div>
+    <button class="nav-logout" onclick="doLogout()">Logout</button>
+    <button class="nav-cta" onclick="openPay()">Book Project</button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div style="position:relative;z-index:1;display:flex;flex-direction:column;align-items:center">
+    <div class="hero-tag">🚀 Thtwaat Technology Solutions — Sagar, MP</div>
+    <h1 class="rev">Your Idea.<br/><span class="hi">Built Fast.</span><br/><span class="h2">Launched Right.</span></h1>
+    <p class="hero-desc rev">Custom mobile apps, web platforms, AI automation & performance digital marketing — built for Indian businesses ready to scale.</p>
+    <div class="hero-ctas rev">
+      <button class="btn-g" onclick="openPay()">🚀 Book a Project</button>
+      <a href="#how" class="btn-o">Watch How We Work</a>
+      <a href="https://wa.me/917869XXXXXX?text=Hi+Thtwaat,+I+want+a+free+MVP+consultation" target="_blank" class="btn-wa">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+        Free MVP Chat
+      </a>
+    </div>
+    <div class="hero-stats rev">
+      <div class="stat-item"><div class="stat-n">50+</div><div class="stat-l">Projects Live</div></div>
+      <div class="stat-item"><div class="stat-n">5+</div><div class="stat-l">Cities Active</div></div>
+      <div class="stat-item"><div class="stat-n">3</div><div class="stat-l">Live Products</div></div>
+      <div class="stat-item"><div class="stat-n">₹0</div><div class="stat-l">MVP Consult Fee</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW WE WORK — YouTube Video -->
+<section id="how" class="video-section">
+  <div class="sec-tag">How It Works</div>
+  <h2 class="sec-h">See Thtwaat in Action</h2>
+  <p class="sec-sub">Watch how we take your idea from concept to live product — end to end, no middlemen.</p>
+  <div class="video-wrap rev">
+    <div class="yt-frame" id="ytFrame">
+      <div class="yt-placeholder" id="ytPlaceholder" onclick="loadYT()">
+        <div class="yt-play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
+        <div class="yt-label">How Thtwaat Works — Company Overview</div>
+        <div class="yt-sublabel">Click to play · Add your YouTube Video ID below</div>
+      </div>
+    </div>
+    <div class="video-id-input">
+      <input type="text" id="ytIdInput" placeholder="Paste YouTube Video ID (e.g. dQw4w9WgXcQ)" value=""/>
+      <button onclick="setYTId()">Set Video</button>
+    </div>
+  </div>
+  <div class="video-points rev">
+    <div class="vp"><div class="vp-icon">💬</div><div><div class="vp-t">Discovery Call</div><div class="vp-d">We understand your goals and tech needs.</div></div></div>
+    <div class="vp"><div class="vp-icon">📐</div><div><div class="vp-t">Design & Plan</div><div class="vp-d">Clear scope, wireframes, and fixed price.</div></div></div>
+    <div class="vp"><div class="vp-icon">⚡</div><div><div class="vp-t">Rapid Build</div><div class="vp-d">Weekly demos, fast iterations, real delivery.</div></div></div>
+    <div class="vp"><div class="vp-icon">🚀</div><div><div class="vp-t">Launch & Scale</div><div class="vp-d">Deploy, go live, ongoing support.</div></div></div>
+  </div>
+</section>
+
+<!-- LIVE APPS -->
+<section id="apps" class="apps-section">
+  <div class="sec-tag">Our Live Products</div>
+  <h2 class="sec-h">Built by Thtwaat,<br/>Live Right Now</h2>
+  <p class="sec-sub">Real products we built and run — this is what your project will look like.</p>
+  <div class="apps-grid">
+    <div class="app-card gold rev">
+      <div class="app-icon g">🛍️</div>
+      <div class="app-name">Thtwaat Marketplace</div>
+      <div class="app-desc">Hyperlocal multi-vendor delivery & marketplace app for Tier 2/3 cities. Flutter + Firebase, live on Google Play Store.</div>
+      <div class="app-tags"><span class="tag">Flutter</span><span class="tag">Firebase</span><span class="tag">Multi-vendor</span><span class="tag">COD</span><span class="tag">Razorpay</span></div>
+      <a href="https://play.google.com/store/apps/details?id=com.thtwaat.marketplace" target="_blank" class="app-link"><div class="live-dot"></div> Live on Play Store →</a>
+    </div>
+    <div class="app-card teal rev">
+      <div class="app-icon t">🧾</div>
+      <div class="app-name">RetailPro AI</div>
+      <div class="app-desc">GST billing, POS & inventory SaaS for Indian retailers. Barcode scanning, multi-tenant, 45+ model Prisma schema.</div>
+      <div class="app-tags"><span class="tag">Next.js</span><span class="tag">Prisma</span><span class="tag">GST</span><span class="tag">Barcode</span><span class="tag">SaaS</span></div>
+      <a href="https://retailproai.in" target="_blank" class="app-link"><div class="live-dot"></div> Visit retailproai.in →</a>
+    </div>
+    <div class="app-card purple rev">
+      <div class="app-icon p">📰</div>
+      <div class="app-name">ViralaAwaaz</div>
+      <div class="app-desc">Hindi news platform with web + Flutter app, Firebase backend, and AdSense monetization targeting Tier 2 India.</div>
+      <div class="app-tags"><span class="tag">Next.js</span><span class="tag">Flutter</span><span class="tag">Firebase</span><span class="tag">Hindi</span><span class="tag">AdSense</span></div>
+      <a href="https://viralawaaz.com" target="_blank" class="app-link"><div class="live-dot"></div> Visit ViralaAwaaz →</a>
+    </div>
+    <div class="app-card gold rev">
+      <div class="app-icon g">🚚</div>
+      <div class="app-name">Thtwaat Delivery Platform</div>
+      <div class="app-desc">Hub-to-hub logistics platform with Shopify OAuth, gig worker model, distance/weight pricing, public API with subscription tiers.</div>
+      <div class="app-tags"><span class="tag">Hono.js</span><span class="tag">Supabase</span><span class="tag">Shopify</span><span class="tag">OpenStreetMap</span></div>
+      <a href="https://thtwaat.com" target="_blank" class="app-link"><div class="live-dot"></div> Visit thtwaat.com →</a>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING — Service-wise -->
+<section id="pricing" class="pricing-section">
+  <div class="sec-tag">Transparent Pricing</div>
+  <h2 class="sec-h">One Price Per Service.<br/>No Surprises.</h2>
+  <p class="sec-sub">Choose your service type — each has fixed pricing, clear deliverables, and Razorpay payment.</p>
+  <div class="pricing-grid">
+
+    <!-- Mobile App -->
+    <div class="p-card rev">
+      <div class="p-emoji">📱</div>
+      <div class="p-name">Mobile App</div>
+      <div class="p-tagline">Flutter app for Android & iOS — Play Store + App Store ready, full backend included.</div>
+      <div class="p-price">₹29,999 <small></small></div>
+      <div class="p-period">One-time · 21 day delivery</div>
+      <ul class="p-feats">
+        <li>Flutter cross-platform app</li>
+        <li>Firebase / Supabase backend</li>
+        <li>Razorpay payment integration</li>
+        <li>Push notifications & analytics</li>
+        <li>Play Store submission help</li>
+        <li>30 days post-launch support</li>
+      </ul>
+      <button class="p-btn outline" onclick="openPayFor('Mobile App — Flutter',2999900)">Book Mobile App →</button>
+    </div>
+
+    <!-- Website -->
+    <div class="p-card rev">
+      <div class="p-emoji">🌐</div>
+      <div class="p-name">Website</div>
+      <div class="p-tagline">Professional business or portfolio website — fast, SEO-optimized, mobile-first.</div>
+      <div class="p-price">₹9,999 <small></small></div>
+      <div class="p-period">One-time · 7 day delivery</div>
+      <ul class="p-feats">
+        <li>Up to 10 pages</li>
+        <li>Mobile responsive design</li>
+        <li>Contact form + WhatsApp button</li>
+        <li>Basic SEO setup</li>
+        <li>Hosted on Vercel (free)</li>
+        <li>1 revision round</li>
+      </ul>
+      <button class="p-btn outline" onclick="openPayFor('Website — Professional',999900)">Book Website →</button>
+    </div>
+
+    <!-- Web App / SaaS -->
+    <div class="p-card hot rev">
+      <div class="p-hot-badge">⭐ Most Booked</div>
+      <div class="p-emoji">💻</div>
+      <div class="p-name">Web App / SaaS</div>
+      <div class="p-tagline">Full-stack web application — dashboards, billing, multi-tenant, admin panel included.</div>
+      <div class="p-price">₹39,999 <small></small></div>
+      <div class="p-period">One-time · 30 day delivery</div>
+      <ul class="p-feats">
+        <li>Next.js / React frontend</li>
+        <li>Node.js + Prisma backend</li>
+        <li>PostgreSQL / Supabase DB</li>
+        <li>Auth, roles, admin dashboard</li>
+        <li>Razorpay billing integration</li>
+        <li>3 revision rounds</li>
+        <li>45 days post-launch support</li>
+      </ul>
+      <button class="p-btn solid" onclick="openPayFor('Web App / SaaS Platform',3999900)">Book Web App →</button>
+    </div>
+
+    <!-- AI Automation -->
+    <div class="p-card rev">
+      <div class="p-emoji">🤖</div>
+      <div class="p-name">AI Automation</div>
+      <div class="p-tagline">WhatsApp bots, workflow automation, Ollama local AI integration for your business.</div>
+      <div class="p-price">₹19,999 <small></small></div>
+      <div class="p-period">One-time · 14 day delivery</div>
+      <ul class="p-feats">
+        <li>WhatsApp AI bot (Meta Cloud API)</li>
+        <li>Ollama / OpenAI integration</li>
+        <li>Business workflow automation</li>
+        <li>Document processing & extraction</li>
+        <li>Dashboard to monitor bot</li>
+        <li>30 days support</li>
+      </ul>
+      <button class="p-btn outline" onclick="openPayFor('AI Automation / WhatsApp Bot',1999900)">Book AI Automation →</button>
+    </div>
+
+    <!-- AI / LLM Project -->
+    <div class="p-card rev">
+      <div class="p-emoji">🧠</div>
+      <div class="p-name">AI / LLM Project</div>
+      <div class="p-tagline">Custom LLM-powered apps — RAG systems, knowledge bases, AI SaaS features, local inference setup.</div>
+      <div class="p-price">₹59,999 <small></small></div>
+      <div class="p-period">One-time · 35–45 day delivery</div>
+      <ul class="p-feats">
+        <li>Custom LLM pipeline (RAG / fine-tune)</li>
+        <li>RTX 4090 local inference setup</li>
+        <li>Knowledge base & vector search</li>
+        <li>API + frontend interface</li>
+        <li>Ollama / OpenAI / Anthropic backend</li>
+        <li>Full documentation</li>
+        <li>60 days support</li>
+      </ul>
+      <button class="p-btn outline" onclick="openPayFor('AI / LLM Custom Project',5999900)">Book AI/LLM Project →</button>
+    </div>
+
+    <!-- Digital Marketing -->
+    <div class="p-card rev">
+      <div class="p-emoji">📊</div>
+      <div class="p-name">Digital Marketing</div>
+      <div class="p-tagline">Google Ads + Meta Ads + Local SEO + WhatsApp campaigns — full monthly management.</div>
+      <div class="p-price">₹7,999 <small>/month</small></div>
+      <div class="p-period">Monthly retainer · Cancel anytime</div>
+      <ul class="p-feats">
+        <li>Google Ads campaign setup & run</li>
+        <li>Meta (FB + Instagram) Ads</li>
+        <li>Local SEO for your city</li>
+        <li>WhatsApp bulk campaigns</li>
+        <li>Monthly performance report</li>
+        <li>Dedicated account manager</li>
+      </ul>
+      <button class="p-btn outline" onclick="openPayFor('Digital Marketing Retainer',799900)">Start Marketing →</button>
+    </div>
+
+  </div>
+</section>
+
+<!-- FREE MVP BOOKING -->
+<section id="mvp" class="mvp-section">
+  <div class="sec-tag">Zero Risk Start</div>
+  <h2 class="sec-h">Free MVP Consultation</h2>
+  <p class="sec-sub">Not sure what you need? Talk to us first — completely free, no commitment.</p>
+  <div class="mvp-box rev">
+    <div class="mvp-content">
+      <h3>Book a Free MVP Chat on WhatsApp</h3>
+      <p>Tell us your idea — we'll give you a free technical plan, rough cost estimate, and timeline. No sales pitch. Just honest advice from people who've actually built and launched products.</p>
+      <ul class="mvp-includes">
+        <li>30-minute technical discussion</li>
+        <li>Rough cost & timeline estimate</li>
+        <li>Tech stack recommendation</li>
+        <li>MVP feature list for your idea</li>
+        <li>Honest feedback — even if we can't help</li>
+      </ul>
+    </div>
+    <div class="mvp-side">
+      <a href="https://wa.me/917869XXXXXX?text=Hi+Thtwaat!+I+want+a+free+MVP+consultation+for+my+project+idea." target="_blank" class="mvp-wa-btn">
+        <span class="mvp-wa-icon">💬</span>
+        Chat on WhatsApp Now
+      </a>
+      <p class="mvp-note">📍 Based in Sagar, MP<br/>Replies within 2 hours<br/>Monday–Saturday, 10am–8pm</p>
+      <button class="p-btn solid" onclick="openPay()" style="border-radius:10px;padding:.85rem">Or Book Directly →</button>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="f-logo">THTWAAT<span>.tech · Sagar, MP</span></div>
+    <div class="f-links">
+      <a href="https://thtwaat.com" target="_blank">Marketplace</a>
+      <a href="https://retailproai.in" target="_blank">RetailPro AI</a>
+      <a href="https://viralawaaz.com" target="_blank">ViralaAwaaz</a>
+      <a href="mailto:thtwaat@gmail.com">Email Us</a>
+    </div>
+  </div>
+  <div class="f-copy">© 2025 Thtwaat Technology Solutions · Built in Sagar, Madhya Pradesh · All rights reserved</div>
+</footer>
+
+</div><!-- end mainSite -->
+
+<!-- ══ RAZORPAY PAYMENT MODAL ══ -->
+<div class="modal-ov" id="payModal">
+  <div class="modal-box">
+    <button class="m-close" onclick="closePay()">×</button>
+    <div class="m-h">Book a Service</div>
+    <div class="m-sub">Pay securely — UPI, Cards, Net Banking, EMI available</div>
+    <div class="pkg-opts" id="pkgOpts">
+      <div class="pkg-opt on" onclick="selPkg(this,'Mobile App — Flutter',2999900)"><input type="radio" name="sp" checked/><div class="pkg-on"><div class="pkg-nm">📱 Mobile App (Flutter)</div><div class="pkg-pr">₹29,999 — 21 day delivery</div></div></div>
+      <div class="pkg-opt" onclick="selPkg(this,'Website — Professional',999900)"><input type="radio" name="sp"/><div class="pkg-on"><div class="pkg-nm">🌐 Website</div><div class="pkg-pr">₹9,999 — 7 day delivery</div></div></div>
+      <div class="pkg-opt" onclick="selPkg(this,'Web App / SaaS Platform',3999900)"><input type="radio" name="sp"/><div class="pkg-on"><div class="pkg-nm">💻 Web App / SaaS</div><div class="pkg-pr">₹39,999 — 30 day delivery ⭐</div></div></div>
+      <div class="pkg-opt" onclick="selPkg(this,'AI Automation / WhatsApp Bot',1999900)"><input type="radio" name="sp"/><div class="pkg-on"><div class="pkg-nm">🤖 AI Automation</div><div class="pkg-pr">₹19,999 — 14 day delivery</div></div></div>
+      <div class="pkg-opt" onclick="selPkg(this,'AI / LLM Custom Project',5999900)"><input type="radio" name="sp"/><div class="pkg-on"><div class="pkg-nm">🧠 AI / LLM Project</div><div class="pkg-pr">₹59,999 — 35-45 day delivery</div></div></div>
+      <div class="pkg-opt" onclick="selPkg(this,'Digital Marketing Retainer',799900)"><input type="radio" name="sp"/><div class="pkg-on"><div class="pkg-nm">📊 Digital Marketing</div><div class="pkg-pr">₹7,999/month</div></div></div>
+    </div>
+    <div class="fld"><label>Name</label><input type="text" id="pName" placeholder="Full name"/></div>
+    <div class="fld"><label>Email</label><input type="email" id="pEmail" placeholder="you@email.com"/></div>
+    <div class="fld"><label>Phone</label><input type="tel" id="pPhone" placeholder="+91 XXXXX XXXXX"/></div>
+    <button class="m-submit" id="pBtn" onclick="launchRzp()">Pay Securely via Razorpay 🔒</button>
+    <div class="m-success" id="pSuccess">✅ Payment received! Our team will WhatsApp you within 2 hours to kick off your project.</div>
+    <div class="m-safe">🔒 100% Secure · UPI · Cards · Net Banking · EMI · Powered by Razorpay</div>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════
+//  STATE
+// ═══════════════════════════════════
+let CU = null; // current user
+let selAmt = 2999900;
+let selName = 'Mobile App — Flutter';
+let ytVideoId = ''; // set by user in admin input
+
+const DB_KEY = 'tt_accounts';
+const USR_KEY = 'tt_user';
+
+// ═══════════════════════════════════
+//  AUTH GATE
+// ═══════════════════════════════════
+function authSwitch(tab){
+  const isLogin = tab==='login';
+  document.getElementById('aLogin').style.display = isLogin?'block':'none';
+  document.getElementById('aSignup').style.display = isLogin?'none':'block';
+  document.getElementById('aTabLogin').className = 'auth-tab'+(isLogin?' on':'');
+  document.getElementById('aTabSignup').className = 'auth-tab'+(!isLogin?' on':'');
+  hideErr();
+}
+
+function showErr(msg){
+  const e=document.getElementById('authErr');
+  e.textContent=msg; e.style.display='block';
+}
+function hideErr(){document.getElementById('authErr').style.display='none';}
+
+function doLogin(){
+  hideErr();
+  const email=document.getElementById('aLEmail').value.trim();
+  const pass=document.getElementById('aLPass').value;
+  if(!email||!pass){showErr('Please enter your email and password.');return;}
+  const db=JSON.parse(localStorage.getItem(DB_KEY)||'{}');
+  if(!db[email]){showErr('No account found. Please sign up first.');authSwitch('signup');return;}
+  if(db[email].pass!==pass){showErr('Incorrect password. Please try again.');return;}
+  enterSite({name:db[email].name,email,phone:db[email].phone});
+}
+
+function doSignup(){
+  hideErr();
+  const name=document.getElementById('aSName').value.trim();
+  const email=document.getElementById('aSEmail').value.trim();
+  const phone=document.getElementById('aSPhone').value.trim();
+  const pass=document.getElementById('aSPass').value;
+  if(!name||!email||!phone||!pass){showErr('Please fill all fields.');return;}
+  if(pass.length<8){showErr('Password must be at least 8 characters.');return;}
+  if(!/\S+@\S+\.\S+/.test(email)){showErr('Please enter a valid email address.');return;}
+  const db=JSON.parse(localStorage.getItem(DB_KEY)||'{}');
+  if(db[email]){showErr('An account with this email already exists. Please login.');authSwitch('login');return;}
+  db[email]={name,phone,pass};
+  localStorage.setItem(DB_KEY,JSON.stringify(db));
+  enterSite({name,email,phone});
+}
+
+function enterSite(u){
+  CU=u;
+  localStorage.setItem(USR_KEY,JSON.stringify(u));
+  document.getElementById('authGate').classList.add('hidden');
+  document.getElementById('mainSite').style.display='block';
+  document.getElementById('navUName').textContent=u.name.split(' ')[0];
+  // Prefill pay modal
+  document.getElementById('pName').value=u.name;
+  document.getElementById('pEmail').value=u.email;
+  document.getElementById('pPhone').value=u.phone||'';
+  initReveal();
+}
+
+function doLogout(){
+  CU=null;
+  localStorage.removeItem(USR_KEY);
+  document.getElementById('mainSite').style.display='none';
+  document.getElementById('authGate').classList.remove('hidden');
+  hideErr();
+  authSwitch('login');
+}
+
+// Auto-login if session exists
+(function(){
+  const saved=localStorage.getItem(USR_KEY);
+  if(saved){try{enterSite(JSON.parse(saved));}catch(e){localStorage.removeItem(USR_KEY);}}
+})();
+
+// ═══════════════════════════════════
+//  YOUTUBE VIDEO
+// ═══════════════════════════════════
+function loadYT(){
+  if(!ytVideoId){
+    document.getElementById('ytIdInput').focus();
+    return;
+  }
+  const frame=document.getElementById('ytFrame');
+  frame.innerHTML='<iframe src="https://www.youtube.com/embed/'+ytVideoId+'?autoplay=1&rel=0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>';
+}
+
+function setYTId(){
+  const val=document.getElementById('ytIdInput').value.trim();
+  if(!val){alert('Please paste a YouTube Video ID (the part after ?v= in the URL).');return;}
+  // Support full URL too
+  const match=val.match(/(?:v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
+  ytVideoId = match ? match[1] : val;
+  // Immediately load
+  const frame=document.getElementById('ytFrame');
+  frame.innerHTML='<iframe src="https://www.youtube.com/embed/'+ytVideoId+'?rel=0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>';
+}
+
+// ═══════════════════════════════════
+//  PAYMENT MODAL
+// ═══════════════════════════════════
+function openPay(){
+  document.getElementById('payModal').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+function openPayFor(name,amt){
+  selName=name; selAmt=amt;
+  document.querySelectorAll('.pkg-opt').forEach(x=>{x.classList.remove('on');x.querySelector('input').checked=false;});
+  document.getElementById('pBtn').textContent='Pay ₹'+Math.round(amt/100).toLocaleString('en-IN')+' via Razorpay 🔒';
+  document.getElementById('payModal').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+function closePay(){
+  document.getElementById('payModal').classList.remove('open');
+  document.body.style.overflow='';
+}
+document.getElementById('payModal').addEventListener('click',function(e){if(e.target===this)closePay();});
+
+function selPkg(el,name,amt){
+  document.querySelectorAll('.pkg-opt').forEach(x=>{x.classList.remove('on');x.querySelector('input').checked=false;});
+  el.classList.add('on'); el.querySelector('input').checked=true;
+  selName=name; selAmt=amt;
+  document.getElementById('pBtn').textContent='Pay ₹'+Math.round(amt/100).toLocaleString('en-IN')+' via Razorpay 🔒';
+}
+
+function launchRzp(){
+  const name=document.getElementById('pName').value.trim();
+  const email=document.getElementById('pEmail').value.trim();
+  const phone=document.getElementById('pPhone').value.trim();
+  if(!name||!email||!phone){alert('Please fill your name, email, and phone number.');return;}
+
+  const options={
+    key:'YOUR_RAZORPAY_KEY_ID', // ← REPLACE with your live Razorpay Key ID
+    amount: selAmt,
+    currency:'INR',
+    name:'Thtwaat Technology Solutions',
+    description: selName,
+    handler:function(resp){
+      document.getElementById('pSuccess').style.display='block';
+      document.getElementById('pBtn').style.display='none';
+      console.log('Razorpay Payment ID:',resp.razorpay_payment_id);
+    },
+    prefill:{name,email,contact:phone},
+    notes:{service:selName},
+    theme:{color:'#F0B429'},
+    modal:{ondismiss:function(){console.log('Razorpay modal closed');}}
+  };
+  try{
+    const rzp=new Razorpay(options);
+    rzp.on('payment.failed',function(r){alert('Payment failed: '+r.error.description+'\nPlease try again or contact us on WhatsApp.');});
+    rzp.open();
+  } catch(err){
+    alert('Could not open Razorpay.\n\nMake sure:\n1. You replaced YOUR_RAZORPAY_KEY_ID with your actual key\n2. You have internet connection\n\nError: '+err.message);
+  }
+}
+
+// ═══════════════════════════════════
+//  SCROLL REVEAL
+// ═══════════════════════════════════
+function initReveal(){
+  const els=document.querySelectorAll('.rev');
+  const obs=new IntersectionObserver(entries=>{
+    entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');obs.unobserve(e.target);}});
+  },{threshold:0.08});
+  els.forEach(el=>obs.observe(el));
+}
+</script>
+</body>
+</html>

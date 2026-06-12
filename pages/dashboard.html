@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Partner Onboarding Dashboard | THTWAAT Launchpad</title>
+    <meta name="description" content="Calculate project pricing, view live demo applications, watch onboarding tutorials, and schedule free MVP consultations.">
+    <link rel="stylesheet" href="../css/style.css">
+    <style>
+        /* Extra styles specific to dashboard elements */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 1.1fr 0.9fr;
+            gap: 3rem;
+            margin-top: 3rem;
+            align-items: start;
+        }
+
+        @media (max-width: 992px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+                gap: 2.5rem;
+            }
+        }
+
+        .video-container {
+            position: relative;
+            padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+            height: 0;
+            overflow: hidden;
+            border-radius: var(--border-radius-md);
+            border: 1px solid var(--border-color);
+            margin-bottom: 1.5rem;
+            background: #000;
+        }
+
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: 0;
+        }
+
+        .action-row {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        @media (max-width: 600px) {
+            .action-row {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+        }
+
+        .pricing-tab-menu {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            background: rgba(0, 0, 0, 0.25);
+            padding: 0.4rem;
+            border-radius: var(--border-radius-md);
+            margin-bottom: 2rem;
+            border: 1px solid var(--border-color);
+        }
+
+        @media (max-width: 600px) {
+            .pricing-tab-menu {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 0.5rem;
+            }
+        }
+
+        .pricing-tab-btn {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            padding: 0.8rem 0.25rem;
+            font-weight: 600;
+            font-size: 0.8rem;
+            cursor: pointer;
+            border-radius: 12px;
+            transition: var(--transition-smooth);
+            font-family: var(--font-heading);
+            text-align: center;
+        }
+
+        .pricing-tab-btn.active {
+            background: var(--primary-glow);
+            color: var(--text-primary);
+            border: 1px solid rgba(139, 92, 246, 0.3);
+            box-shadow: 0 4px 12px rgba(139, 92, 246, 0.1);
+        }
+
+        .pricing-tab-btn:hover:not(.active) {
+            color: var(--text-primary);
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .calculator-spec-box {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 1.25rem 2rem;
+            border-radius: var(--border-radius-md);
+            margin: 2rem 0;
+            border: 1px solid var(--border-color);
+        }
+
+        .spec-item {
+            text-align: center;
+        }
+
+        .spec-label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-secondary);
+            margin-bottom: 0.25rem;
+        }
+
+        .spec-val {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--secondary);
+            font-family: var(--font-heading);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header Navigation -->
+    <header>
+        <div class="container nav-container">
+            <a href="../index.html" class="logo-container">
+                <div class="logo-icon">⚡ <span>THTWAAT</span></div>
+                <div class="logo-text">Launch<span>pad</span></div>
+            </a>
+            <ul class="nav-menu">
+                <li><a href="../index.html" class="nav-link">Home</a></li>
+                <li><a href="portfolio.html" class="nav-link">Our Projects</a></li>
+                <li><a href="pricing.html" class="nav-link">Plans & Pricing</a></li>
+            </ul>
+            <a href="https://wa.me/917554900000" class="nav-btn" target="_blank" style="background: var(--grad-accent); color: #07090e;">Chat WhatsApp</a>
+            <button class="menu-toggle" aria-label="Toggle Menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+    </header>
+
+    <!-- Dashboard Main -->
+    <section class="section-padding">
+        <div class="container">
+            
+            <!-- Welcome Header -->
+            <div style="margin-bottom: 3rem; border-bottom: 1px solid var(--border-color); padding-bottom: 2rem;">
+                <span class="section-tag" style="text-transform: uppercase;">Onboarding Dashboard</span>
+                <h1 style="font-size: 2.75rem; margin-bottom: 0.75rem; background: var(--grad-text); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+                    Welcome to the Launchpad<span id="client-greeting-name"></span>!
+                </h1>
+                <p style="margin-bottom: 0;">Watch our process breakdown and calculate budget scopes for your custom MVP.</p>
+            </div>
+
+            <!-- Two-Column Layout -->
+            <div class="dashboard-grid">
+                
+                <!-- COLUMN 1: VIDEO AND LIVE LINKS -->
+                <div>
+                    <div class="funnel-card" style="padding: 2rem; margin-bottom: 2rem;">
+                        <h3 style="margin-bottom: 1.25rem;">🎬 How We Works Walkthrough</h3>
+                        
+                        <!-- Responsive YouTube Video Wrapper -->
+                        <div class="video-container">
+                            <iframe 
+                                src="https://www.youtube.com/embed/ysz5S6PUM-U" 
+                                title="THTWAAT MVP Onboarding Video" 
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                                allowfullscreen>
+                            </iframe>
+                        </div>
+                        
+                        <p style="font-size: 0.95rem; margin-bottom: 0;">
+                            Watch this quick explanation to learn how THTWAAT launches responsive custom applications and automations within 15 days using optimized boilerplate systems and clean-code principles.
+                        </p>
+                    </div>
+
+                    <!-- Live Demo App Links -->
+                    <div class="funnel-card" style="padding: 2rem;">
+                        <h3 style="margin-bottom: 1rem;">⚡ Launch Demos</h3>
+                        <p style="font-size: 0.9rem; margin-bottom: 1.5rem;">See live examples of systems we build. Test the responsiveness, speed, and cleaner interfaces.</p>
+                        
+                        <div class="action-row">
+                            <a href="https://nextjs.org" class="btn btn-secondary" target="_blank" style="display: flex; gap: 0.5rem; justify-content: center; font-size: 0.9rem; padding: 0.8rem 1rem;">
+                                🌐 View Boilerplate Web App
+                            </a>
+                            <a href="https://wa.me/917554900000?text=Hi%20THTWAAT!%20I%27d%20like%20to%20receive%20a%20demo%20Android%20APK%20for%20testing." class="btn btn-secondary" target="_blank" style="display: flex; gap: 0.5rem; justify-content: center; font-size: 0.9rem; padding: 0.8rem 1rem;">
+                                📱 Download Android APK
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- COLUMN 2: INTERACTIVE PLAN ESTIMATOR -->
+                <div class="funnel-card" style="padding: 2.5rem; position: sticky; top: 100px;">
+                    <h3 class="text-center" style="margin-bottom: 0.5rem;">Estimate & Plan Selector</h3>
+                    <p class="text-center" style="font-size: 0.85rem; margin-bottom: 1.5rem; color: var(--text-secondary);">Switch between plans to configure custom estimates.</p>
+                    
+                    <!-- Pricing Plan Selector Tabs -->
+                    <div class="pricing-tab-menu">
+                        <button class="pricing-tab-btn active" data-plan="app">App</button>
+                        <button class="pricing-tab-btn" data-plan="website">Web</button>
+                        <button class="pricing-tab-btn" data-plan="webapp">Web App</button>
+                        <button class="pricing-tab-btn" data-plan="automation">Auto</button>
+                        <button class="pricing-tab-btn" data-plan="llm">AI/LLM</button>
+                    </div>
+
+                    <!-- Plan Spec Panel -->
+                    <div id="plan-details-panel">
+                        <h4 id="config-title" style="font-size: 1.35rem; color: var(--text-primary); margin-bottom: 1rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.75rem;">
+                            Custom Mobile App (iOS & Android)
+                        </h4>
+                        
+                        <p style="font-size: 0.85rem; text-transform: uppercase; color: var(--text-muted); font-weight: 700; margin-bottom: 0.75rem;">Deliverables Included:</p>
+                        <ul id="config-deliverables" class="pricing-features" style="margin: 0 0 2rem 0; border: none; padding: 0;">
+                            <!-- App.js inserts items here dynamically -->
+                        </ul>
+
+                        <!-- Specs Showcase Box -->
+                        <div class="calculator-spec-box">
+                            <div class="spec-item">
+                                <div class="spec-label">Estimate Price</div>
+                                <div id="config-price" class="spec-val">Starts at ₹79,999</div>
+                            </div>
+                            <div class="spec-item">
+                                <div class="spec-label">Est. Timeline</div>
+                                <div id="config-timeline" class="spec-val" style="color: var(--text-primary);">15-20 Days</div>
+                            </div>
+                        </div>
+
+                        <!-- CTA Actions -->
+                        <a id="dashboard-wa-link" href="#" target="_blank" class="btn btn-accent" style="width: 100%; margin-bottom: 1rem; text-align: center;">
+                            💬 Book Free MVP on WhatsApp
+                        </a>
+                        
+                        <a id="dashboard-book-btn" href="#" class="btn btn-secondary" style="width: 100%; text-align: center; border-color: var(--primary);">
+                            💳 Select and Check Deliverables
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container footer-grid">
+            <div class="footer-brand">
+                <div class="logo-icon" style="margin-bottom: 1rem;">⚡ <span>THTWAAT</span></div>
+                <p>Fast-track MVP and custom software development agency. Turn your product vision into clean, live code.</p>
+            </div>
+            <div>
+                <h4 class="footer-title">Our Capabilities</h4>
+                <ul class="footer-links">
+                    <li><a href="../index.html#lead-section">Mobile Apps</a></li>
+                    <li><a href="../index.html#lead-section">Web Apps</a></li>
+                    <li><a href="../index.html#lead-section">AI Automations</a></li>
+                    <li><a href="../index.html#lead-section">LLM Integrations</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="footer-title">Resources</h4>
+                <ul class="footer-links">
+                    <li><a href="portfolio.html">Client Portfolio</a></li>
+                    <li><a href="pricing.html">Standard Packages</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="footer-title">Get in Touch</h4>
+                <p style="font-size: 0.9rem; margin-bottom: 0.5rem; color: var(--text-secondary);">📍 Bhopal, Madhya Pradesh, India</p>
+                <p style="font-size: 0.9rem; margin-bottom: 0.5rem; color: var(--text-secondary);">📧 projects@thtwaat.com</p>
+                <p style="font-size: 0.9rem; color: var(--text-secondary);">📞 +91 755 4900000</p>
+            </div>
+        </div>
+        <div class="container footer-bottom">
+            <p>&copy; 2026 THTWAAT Launchpad. All rights reserved.</p>
+            <p>Designed for Rapid MVP Onboarding</p>
+        </div>
+    </footer>
+
+    <script src="../js/app.js"></script>
+</body>
+</html>
