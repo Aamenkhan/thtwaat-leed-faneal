@@ -1,7 +1,21 @@
 {
+  "version": 2,
+  "installCommand": "npm install && npm install --prefix backend",
   "buildCommand": "",
   "outputDirectory": ".",
-  "framework": null,
+  "functions": {
+    "api/index.js": {
+      "memory": 1024,
+      "maxDuration": 30
+    }
+  },
+  "rewrites": [
+    { "source": "/health", "destination": "/api" },
+    { "source": "/health/(.*)", "destination": "/api" },
+    { "source": "/lead/create", "destination": "/api" },
+    { "source": "/leads", "destination": "/api" },
+    { "source": "/webhook/whatsapp", "destination": "/api" }
+  ],
   "cleanUrls": true,
   "trailingSlash": false
 }

@@ -536,6 +536,7 @@ footer{padding:2.5rem 5%;border-top:1px solid var(--border);position:relative;z-
       <a href="https://retailproai.in" target="_blank">RetailPro AI</a>
       <a href="https://viralawaaz.com" target="_blank">ViralaAwaaz</a>
       <a href="mailto:thtwaat@gmail.com">Email Us</a>
+      <a href="pages/admin.html">Admin</a>
     </div>
   </div>
   <div class="f-copy">© 2025 Thtwaat Technology Solutions · Built in Sagar, Madhya Pradesh · All rights reserved</div>
@@ -701,11 +702,23 @@ function selPkg(el,name,amt){
   document.getElementById('pBtn').textContent='Pay ₹'+Math.round(amt/100).toLocaleString('en-IN')+' via Razorpay 🔒';
 }
 
-function launchRzp(){
+async function launchRzp(){
   const name=document.getElementById('pName').value.trim();
   const email=document.getElementById('pEmail').value.trim();
   const phone=document.getElementById('pPhone').value.trim();
   if(!name||!email||!phone){alert('Please fill your name, email, and phone number.');return;}
+
+  if(window.ThtwaatLeads){
+    try{
+      await ThtwaatLeads.submitWebsiteLead({
+        name,email,phone,
+        message:`Interested in ${selName}. Payment checkout started on website.`,
+        source:'Website'
+      });
+    }catch(err){
+      console.warn('Lead capture failed:',err.message);
+    }
+  }
 
   const options={
     key:'YOUR_RAZORPAY_KEY_ID', // ← REPLACE with your live Razorpay Key ID
@@ -743,5 +756,6 @@ function initReveal(){
   els.forEach(el=>obs.observe(el));
 }
 </script>
+<script src="js/leads-api.js"></script>
 </body>
 </html>
