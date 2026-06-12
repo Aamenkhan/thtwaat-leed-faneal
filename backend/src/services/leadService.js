@@ -1,5 +1,5 @@
 import { analyzeLead, formatAiSummary } from './aiService.js';
-import { appendLeadToSheet, getLeadStats } from './sheetsService.js';
+import { saveLead, getLeadStats } from './storageService.js';
 import { sendWhatsAppText, buildLeadAckMessage } from './whatsappService.js';
 import { normalizePhone, formatPhoneDisplay } from '../utils/phone.js';
 import { normalizeSource } from '../constants/sources.js';
@@ -30,7 +30,7 @@ export async function createLead(input) {
     aiSummary: formatAiSummary(analysis.category, analysis.summary),
   };
 
-  await appendLeadToSheet(lead);
+  await saveLead(lead);
 
   return lead;
 }

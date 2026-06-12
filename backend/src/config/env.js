@@ -10,9 +10,14 @@ function requireEnv(name, { optional = false } = {}) {
   return value || '';
 }
 
+const storageProvider = (process.env.STORAGE_PROVIDER || 'excel').toLowerCase();
+
 export const env = {
   nodeEnv: process.env.NODE_ENV || 'development',
   port: Number(process.env.PORT || 3000),
+  storageProvider,
+  excelFilePath: process.env.EXCEL_FILE_PATH || './data/leads.xlsx',
+  blobReadWriteToken: process.env.BLOB_READ_WRITE_TOKEN || '',
   deepseekApiKey: requireEnv('DEEPSEEK_API_KEY', { optional: true }),
   deepseekModel: process.env.DEEPSEEK_MODEL || 'deepseek-chat',
   deepseekBaseUrl: process.env.DEEPSEEK_BASE_URL || 'https://api.deepseek.com',
@@ -39,14 +44,35 @@ export function parseServiceAccount() {
   }
 }
 
+function hasGoogleStorage() {
+  return Boolean(env.googleSheetId && env.googleServiceAccount);
+}
+
+function hasExcelStorage() {
+  if (process.env.VERCEL) {
+    return Boolean(env.blobReadWriteToken);
+  }
+  return Boolean(env.excelFilePath);
+}
+
 export function assertRuntimeConfig() {
   const missing = [];
 
   if (!env.deepseekApiKey && !env.openaiApiKey) {
     missing.push('DEEPSEEK_API_KEY or OPENAI_API_KEY');
   }
-  if (!env.googleSheetId) missing.push('GOOGLE_SHEET_ID');
-  if (!env.googleServiceAccount) missing.push('GOOGLE_SERVICE_ACCOUNT');
+
+  if (env.storageProvider === 'google' && !hasGoogleStorage()) {
+    missing.push('GOOGLE_SHEET_ID and GOOGLE_SERVICE_ACCOUNT');
+  }
+
+  if (env.storageProvider === 'excel' && !hasExcelStorage()) {
+    missing.push('EXCEL_FILE_PATH or BLOB_READ_WRITE_TOKEN');
+  }
+
+  if (env.storageProvider === 'both' && !hasGoogleStorage() && !hasExcelStorage()) {
+    missing.push('Google Sheets or Excel storage configuration');
+  }
 
   if (missing.length) {
     const error = new Error(`Lead pipeline misconfigured. Missing: ${missing.join(', ')}`);

@@ -2,18 +2,14 @@ import { google } from 'googleapis';
 import { env, parseServiceAccount } from '../config/env.js';
 import { logger } from '../utils/logger.js';
 import { AppError } from '../utils/errors.js';
+import {
+  LEAD_HEADERS,
+  leadToRow,
+  rowToLead,
+  buildLeadStats,
+} from '../constants/storage.js';
 
 const SHEET_NAME = 'Leads';
-const HEADERS = [
-  'Name',
-  'Phone',
-  'Email',
-  'Message',
-  'Source',
-  'Timestamp',
-  'Lead Score',
-  'AI Summary',
-];
 
 let sheetsClient = null;
 let headersInitialized = false;
@@ -60,7 +56,7 @@ async function ensureHeaders() {
       spreadsheetId: env.googleSheetId,
       range,
       valueInputOption: 'RAW',
-      requestBody: { values: [HEADERS] },
+      requestBody: { values: [LEAD_HEADERS] },
     });
     logger.info('Google Sheet headers initialized');
   }
@@ -72,16 +68,7 @@ export async function appendLeadToSheet(lead) {
   await ensureHeaders();
 
   const sheets = getSheetsClient();
-  const row = [
-    lead.name,
-    lead.phone,
-    lead.email || '',
-    lead.message,
-    lead.source,
-    lead.timestamp,
-    String(lead.leadScore),
-    lead.aiSummary,
-  ];
+  const row = leadToRow(lead);
 
   await sheets.spreadsheets.values.append({
     spreadsheetId: env.googleSheetId,
@@ -95,9 +82,8 @@ export async function appendLeadToSheet(lead) {
   return lead;
 }
 
-function parseCategoryFromSummary(aiSummary) {
-  const match = String(aiSummary || '').match(/\[Category:\s*(.+?)\]/i);
-  return match ? match[1].trim() : 'Uncategorized';
+export function isGoogleConfigured() {
+  return Boolean(env.googleSheetId && env.googleServiceAccount);
 }
 
 export async function fetchLeadsFromSheet() {
@@ -111,45 +97,10 @@ export async function fetchLeadsFromSheet() {
 
   const rows = response.data.values || [];
 
-  return rows.map((row) => {
-    const [name, phone, email, message, source, timestamp, leadScore, aiSummary] = row;
-    return {
-      name: name || '',
-      phone: phone || '',
-      email: email || '',
-      message: message || '',
-      source: source || 'Website',
-      timestamp: timestamp || '',
-      leadScore: Number(leadScore) || 0,
-      aiSummary: aiSummary || '',
-      category: parseCategoryFromSummary(aiSummary),
-    };
-  });
+  return rows.map((row) => rowToLead(row));
 }
 
 export async function getLeadStats() {
   const leads = await fetchLeadsFromSheet();
-  const today = new Date().toISOString().slice(0, 10);
-
-  const sources = {};
-  const categories = {};
-
-  let newLeadsToday = 0;
-
-  for (const lead of leads) {
-    sources[lead.source] = (sources[lead.source] || 0) + 1;
-    categories[lead.category] = (categories[lead.category] || 0) + 1;
-
-    if (lead.timestamp.startsWith(today)) {
-      newLeadsToday += 1;
-    }
-  }
-
-  return {
-    totalLeads: leads.length,
-    newLeadsToday,
-    sources,
-    categories,
-    leads: leads.reverse(),
-  };
+  return buildLeadStats(leads);
 }

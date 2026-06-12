@@ -14,7 +14,46 @@ Complete setup for WhatsApp + Website lead capture with OpenAI scoring and Googl
 
 ---
 
-## 2. Google Sheets Setup
+## 2. Excel Storage Setup (Default)
+
+Leads are saved to a real **`.xlsx` Excel file** that you can open in Microsoft Excel.
+
+### Local / Railway / Docker
+
+Default file path:
+
+```env
+STORAGE_PROVIDER=excel
+EXCEL_FILE_PATH=./data/leads.xlsx
+```
+
+The file is created automatically on first lead.
+
+### Vercel (Production)
+
+Vercel serverless needs cloud storage for Excel files:
+
+1. Open your Vercel project → **Storage** → **Create Database/Store** → **Blob**
+2. Connect Blob store to `thtwaat-leed-funnel`
+3. Vercel auto-adds `BLOB_READ_WRITE_TOKEN`
+4. Keep:
+   ```env
+   STORAGE_PROVIDER=excel
+   ```
+
+Leads save to `thtwaat-leads.xlsx` in Blob. Download anytime from admin dashboard.
+
+### Optional: Google Sheets too
+
+```env
+STORAGE_PROVIDER=both
+GOOGLE_SHEET_ID=...
+GOOGLE_SERVICE_ACCOUNT={...}
+```
+
+---
+
+## 3. Google Sheets Setup (Optional)
 
 1. Create a new Google Sheet.
 2. Rename the first tab to **`Leads`**.

@@ -3,5 +3,7 @@
 .env.local
 node_modules/
 backend/node_modules/
+data/*.xlsx
+!data/.gitkeep
 npm-debug.log*
 .DS_Store

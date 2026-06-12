@@ -45,6 +45,7 @@ app.get('/', (_req, res) => {
       health: '/health',
       createLead: 'POST /lead/create',
       listLeads: 'GET /leads',
+      exportExcel: 'GET /leads/export',
       whatsappWebhook: 'GET|POST /webhook/whatsapp',
     },
   });
