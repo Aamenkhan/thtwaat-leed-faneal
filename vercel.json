@@ -15,7 +15,8 @@
     { "source": "/lead/create", "destination": "/api" },
     { "source": "/leads", "destination": "/api" },
     { "source": "/leads/export", "destination": "/api" },
-    { "source": "/webhook/whatsapp", "destination": "/api" }
+    { "source": "/webhook/whatsapp", "destination": "/api" },
+    { "source": "/admin", "destination": "/pages/admin.html" }
   ],
   "cleanUrls": true,
   "trailingSlash": false
