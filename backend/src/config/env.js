@@ -12,12 +12,83 @@ function requireEnv(name, { optional = false } = {}) {
 
 const storageProvider = (process.env.STORAGE_PROVIDER || 'excel').toLowerCase();
 
+export function isVercelRuntime() {
+  return Boolean(process.env.VERCEL === '1' || process.env.VERCEL_ENV);
+}
+
+/**
+ * Vercel may inject BLOB_READ_WRITE_TOKEN or a store-specific variant
+ * when a Blob store is linked to the project.
+ */
+export function getBlobReadWriteToken() {
+  const direct = process.env.BLOB_READ_WRITE_TOKEN?.trim();
+  if (direct) {
+    return direct;
+  }
+
+  for (const [key, value] of Object.entries(process.env)) {
+    if (!value?.trim()) {
+      continue;
+    }
+
+    if (/^BLOB_.+_READ_WRITE_TOKEN$/i.test(key)) {
+      return value.trim();
+    }
+  }
+
+  return '';
+}
+
+export function getExcelStorageMode() {
+  if (getBlobReadWriteToken()) {
+    return 'vercel-blob';
+  }
+
+  if (isVercelRuntime()) {
+    return 'vercel-blob-required';
+  }
+
+  return 'local-file';
+}
+
+export function hasExcelStorage() {
+  const blobToken = getBlobReadWriteToken();
+
+  if (blobToken) {
+    return true;
+  }
+
+  // Vercel serverless filesystem is ephemeral — Blob token is required there.
+  if (isVercelRuntime()) {
+    return false;
+  }
+
+  return Boolean(env.excelFilePath);
+}
+
+export function getExcelStorageConfigError() {
+  if (hasExcelStorage()) {
+    return null;
+  }
+
+  if (isVercelRuntime()) {
+    return [
+      'On Vercel, EXCEL_FILE_PATH alone does not work (serverless has no persistent disk).',
+      'Link a Blob store to this project in Vercel → Storage → Connect.',
+      'That injects BLOB_READ_WRITE_TOKEN automatically for Production.',
+      'Then redeploy.',
+    ].join(' ');
+  }
+
+  return 'Set EXCEL_FILE_PATH for local file storage or BLOB_READ_WRITE_TOKEN for Vercel Blob.';
+}
+
 export const env = {
   nodeEnv: process.env.NODE_ENV || 'development',
   port: Number(process.env.PORT || 3000),
   storageProvider,
   excelFilePath: process.env.EXCEL_FILE_PATH || './data/leads.xlsx',
-  blobReadWriteToken: process.env.BLOB_READ_WRITE_TOKEN || '',
+  blobReadWriteToken: getBlobReadWriteToken(),
   deepseekApiKey: requireEnv('DEEPSEEK_API_KEY', { optional: true }),
   deepseekModel: process.env.DEEPSEEK_MODEL || 'deepseek-chat',
   deepseekBaseUrl: process.env.DEEPSEEK_BASE_URL || 'https://api.deepseek.com',
@@ -48,13 +119,6 @@ function hasGoogleStorage() {
   return Boolean(env.googleSheetId && env.googleServiceAccount);
 }
 
-function hasExcelStorage() {
-  if (process.env.VERCEL) {
-    return Boolean(env.blobReadWriteToken);
-  }
-  return Boolean(env.excelFilePath);
-}
-
 export function assertRuntimeConfig() {
   const missing = [];
 
@@ -67,16 +131,26 @@ export function assertRuntimeConfig() {
   }
 
   if (env.storageProvider === 'excel' && !hasExcelStorage()) {
-    missing.push('EXCEL_FILE_PATH or BLOB_READ_WRITE_TOKEN');
+    missing.push(getExcelStorageConfigError());
   }
 
   if (env.storageProvider === 'both' && !hasGoogleStorage() && !hasExcelStorage()) {
-    missing.push('Google Sheets or Excel storage configuration');
+    missing.push('Google Sheets or Excel/Blob storage configuration');
   }
 
   if (missing.length) {
-    const error = new Error(`Lead pipeline misconfigured. Missing: ${missing.join(', ')}`);
+    const error = new Error(`Lead pipeline misconfigured. Missing: ${missing.join('; ')}`);
     error.code = 'CONFIG_ERROR';
     throw error;
   }
+}
+
+export function getStorageDiagnostics() {
+  return {
+    runtime: isVercelRuntime() ? 'vercel' : 'local',
+    mode: getExcelStorageMode(),
+    blobTokenConfigured: Boolean(getBlobReadWriteToken()),
+    excelFilePath: env.excelFilePath,
+    configured: hasExcelStorage(),
+  };
 }

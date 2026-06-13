@@ -2,7 +2,7 @@ import ExcelJS from 'exceljs';
 import fs from 'fs/promises';
 import path from 'path';
 import { list, put } from '@vercel/blob';
-import { env } from '../config/env.js';
+import { env, getBlobReadWriteToken, hasExcelStorage, getExcelStorageMode } from '../config/env.js';
 import { logger } from '../utils/logger.js';
 import { AppError } from '../utils/errors.js';
 import {
@@ -14,7 +14,12 @@ import {
 } from '../constants/storage.js';
 
 function useBlobStorage() {
-  return Boolean(env.blobReadWriteToken);
+  return Boolean(getBlobReadWriteToken());
+}
+
+function blobOptions(extra = {}) {
+  const token = getBlobReadWriteToken();
+  return token ? { token, ...extra } : extra;
 }
 
 async function ensureDataDir(filePath) {
@@ -38,7 +43,7 @@ async function saveBufferToFile(buffer) {
 }
 
 async function loadBufferFromBlob() {
-  const { blobs } = await list({ prefix: EXCEL_BLOB_NAME, limit: 1 });
+  const { blobs } = await list(blobOptions({ prefix: EXCEL_BLOB_NAME, limit: 1 }));
   if (!blobs.length) {
     return null;
   }
@@ -52,12 +57,12 @@ async function loadBufferFromBlob() {
 }
 
 async function saveBufferToBlob(buffer) {
-  await put(EXCEL_BLOB_NAME, buffer, {
+  await put(EXCEL_BLOB_NAME, buffer, blobOptions({
     access: 'public',
     addRandomSuffix: false,
     allowOverwrite: true,
     contentType: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-  });
+  }));
 }
 
 async function loadWorkbookBuffer() {
@@ -150,10 +155,7 @@ function readLeadsFromWorkbook(workbook) {
 }
 
 export function isExcelConfigured() {
-  if (process.env.VERCEL) {
-    return Boolean(env.blobReadWriteToken);
-  }
-  return Boolean(env.excelFilePath);
+  return hasExcelStorage();
 }
 
 export async function appendLeadToExcel(lead) {
@@ -200,9 +202,11 @@ export async function exportExcelBuffer() {
 }
 
 export function getExcelStorageInfo() {
+  const mode = getExcelStorageMode();
   return {
     configured: isExcelConfigured(),
-    backend: useBlobStorage() ? 'vercel-blob' : 'local-file',
+    backend: mode,
     path: useBlobStorage() ? EXCEL_BLOB_NAME : env.excelFilePath,
+    blobTokenConfigured: Boolean(getBlobReadWriteToken()),
   };
 }

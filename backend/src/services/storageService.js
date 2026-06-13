@@ -1,4 +1,4 @@
-import { env } from '../config/env.js';
+import { env, getStorageDiagnostics } from '../config/env.js';
 import { logger } from '../utils/logger.js';
 import { AppError } from '../utils/errors.js';
 import {
@@ -15,6 +15,7 @@ export function getStorageProvider() {
 export function getStorageInfo() {
   return {
     provider: env.storageProvider,
+    diagnostics: getStorageDiagnostics(),
     google: {
       configured: isGoogleConfigured(),
       sheetId: env.googleSheetId || null,
