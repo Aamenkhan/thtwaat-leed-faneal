@@ -1,8 +1,15 @@
 import ExcelJS from 'exceljs';
 import fs from 'fs/promises';
-import path from 'path';
-import { list, put } from '@vercel/blob';
-import { env, getBlobReadWriteToken, hasExcelStorage, getExcelStorageMode } from '../config/env.js';
+import { get, list, put } from '@vercel/blob';
+import {
+  env,
+  getBlobReadWriteToken,
+  hasExcelStorage,
+  getExcelStorageMode,
+  isBlobStorageAvailable,
+  getBlobAuthMode,
+  getBlobStoreId,
+} from '../config/env.js';
 import { logger } from '../utils/logger.js';
 import { AppError } from '../utils/errors.js';
 import {
@@ -14,12 +21,27 @@ import {
 } from '../constants/storage.js';
 
 function useBlobStorage() {
-  return Boolean(getBlobReadWriteToken());
+  return isBlobStorageAvailable();
 }
 
+/**
+ * Let @vercel/blob resolve OIDC (BLOB_STORE_ID + VERCEL_OIDC_TOKEN) automatically.
+ * Only pass an explicit token for legacy BLOB_READ_WRITE_TOKEN mode.
+ */
 function blobOptions(extra = {}) {
   const token = getBlobReadWriteToken();
-  return token ? { token, ...extra } : extra;
+  if (token) {
+    return { token, ...extra };
+  }
+  return extra;
+}
+
+async function streamToBuffer(stream) {
+  const chunks = [];
+  for await (const chunk of stream) {
+    chunks.push(typeof chunk === 'string' ? Buffer.from(chunk) : chunk);
+  }
+  return Buffer.concat(chunks);
 }
 
 async function ensureDataDir(filePath) {
@@ -43,22 +65,29 @@ async function saveBufferToFile(buffer) {
 }
 
 async function loadBufferFromBlob() {
+  const access = env.blobAccess;
+
+  const result = await get(EXCEL_BLOB_NAME, blobOptions({ access }));
+  if (result?.stream) {
+    return streamToBuffer(result.stream);
+  }
+
   const { blobs } = await list(blobOptions({ prefix: EXCEL_BLOB_NAME, limit: 1 }));
   if (!blobs.length) {
     return null;
   }
 
-  const response = await fetch(blobs[0].url);
-  if (!response.ok) {
-    throw new AppError('Failed to load Excel file from Vercel Blob', 503, 'EXCEL_LOAD_FAILED');
+  const byPath = await get(blobs[0].pathname, blobOptions({ access }));
+  if (byPath?.stream) {
+    return streamToBuffer(byPath.stream);
   }
 
-  return Buffer.from(await response.arrayBuffer());
+  throw new AppError('Failed to load Excel file from Vercel Blob', 503, 'EXCEL_LOAD_FAILED');
 }
 
 async function saveBufferToBlob(buffer) {
   await put(EXCEL_BLOB_NAME, buffer, blobOptions({
-    access: 'public',
+    access: env.blobAccess,
     addRandomSuffix: false,
     allowOverwrite: true,
     contentType: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
@@ -176,7 +205,7 @@ export async function appendLeadToExcel(lead) {
   logger.info('Lead saved to Excel', {
     phone: lead.phone,
     source: lead.source,
-    backend: useBlobStorage() ? 'vercel-blob' : 'file',
+    backend: useBlobStorage() ? getBlobAuthMode() : 'local-file',
   });
 
   return lead;
@@ -207,6 +236,8 @@ export function getExcelStorageInfo() {
     configured: isExcelConfigured(),
     backend: mode,
     path: useBlobStorage() ? EXCEL_BLOB_NAME : env.excelFilePath,
+    blobAuthMode: getBlobAuthMode(),
+    blobStoreIdConfigured: Boolean(getBlobStoreId()),
     blobTokenConfigured: Boolean(getBlobReadWriteToken()),
   };
 }
