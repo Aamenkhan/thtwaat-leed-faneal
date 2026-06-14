@@ -581,33 +581,82 @@ const DB_KEY = 'tt_accounts';
 const USR_KEY = 'tt_user';
 const LEAD_SYNC_KEY = 'tt_leads_synced';
 
-async function syncLeadToAdmin(user, message) {
+function normalizeClientPhone(phone) {
+  const digits = String(phone || '').replace(/\D/g, '');
+  if (digits.length === 10) return digits;
+  if (digits.length === 12 && digits.startsWith('91')) return digits.slice(2);
+  return digits;
+}
+
+function isLeadSynced(email) {
+  const synced = JSON.parse(localStorage.getItem(LEAD_SYNC_KEY) || '[]');
+  return synced.includes(email);
+}
+
+function markLeadSynced(email) {
+  const synced = JSON.parse(localStorage.getItem(LEAD_SYNC_KEY) || '[]');
+  if (!synced.includes(email)) {
+    synced.push(email);
+    localStorage.setItem(LEAD_SYNC_KEY, JSON.stringify(synced));
+  }
+}
+
+async function pushLeadToAdmin(user, message, { force = false } = {}) {
   if (!window.ThtwaatLeads || !user?.email) {
     console.warn('[THTWAAT Lead] API client not loaded — lead not sent');
     return false;
   }
 
-  const synced = JSON.parse(localStorage.getItem(LEAD_SYNC_KEY) || '[]');
-  if (synced.includes(user.email)) {
+  if (!force && isLeadSynced(user.email)) {
     return true;
+  }
+
+  const phone = normalizeClientPhone(user.phone);
+  if (phone.length < 10) {
+    console.error('[THTWAAT Lead] Invalid phone for lead sync', user.phone);
+    return false;
   }
 
   try {
     await ThtwaatLeads.submitWebsiteLead({
       name: user.name,
       email: user.email,
-      phone: user.phone || '',
+      phone,
       message,
       source: 'Website',
     });
-    synced.push(user.email);
-    localStorage.setItem(LEAD_SYNC_KEY, JSON.stringify(synced));
+    markLeadSynced(user.email);
     console.info('[THTWAAT Lead] Lead synced to admin', user.email);
     return true;
   } catch (err) {
-    console.error('[THTWAAT Lead] Lead sync failed', err.message);
+    console.error('[THTWAAT Lead] Lead sync failed', err.message, err);
     return false;
   }
+}
+
+async function pushLeadWithRetry(user, message, attempts = 3) {
+  for (let i = 1; i <= attempts; i++) {
+    const ok = await pushLeadToAdmin(user, message, { force: true });
+    if (ok) return true;
+    if (i < attempts) await new Promise((r) => setTimeout(r, 1500 * i));
+  }
+  return false;
+}
+
+function scheduleLeadSync(user, message) {
+  if (!user?.email || isLeadSynced(user.email)) return;
+  pushLeadToAdmin(user, message).catch(() => {});
+}
+
+let leadSyncInterval = null;
+function startBackgroundLeadSync(user) {
+  if (leadSyncInterval) clearInterval(leadSyncInterval);
+  if (!user?.email) return;
+  leadSyncInterval = setInterval(() => {
+    if (!isLeadSynced(user.email)) {
+      pushLeadToAdmin(user, 'Website user session — retry lead sync.').catch(() => {});
+    }
+  }, 15000);
 }
 
 // ═══════════════════════════════════
@@ -637,7 +686,7 @@ async function doLogin(){
   if(!db[email]){showErr('No account found. Please sign up first.');authSwitch('signup');return;}
   if(db[email].pass!==pass){showErr('Incorrect password. Please try again.');return;}
   const user={name:db[email].name,email,phone:db[email].phone};
-  await syncLeadToAdmin(user,'User login on THTWAAT website.');
+  await pushLeadToAdmin(user,'User login on THTWAAT website.');
   enterSite(user);
 }
 
@@ -650,13 +699,19 @@ async function doSignup(){
   if(!name||!email||!phone||!pass){showErr('Please fill all fields.');return;}
   if(pass.length<8){showErr('Password must be at least 8 characters.');return;}
   if(!/\S+@\S+\.\S+/.test(email)){showErr('Please enter a valid email address.');return;}
+  const phoneDigits=normalizeClientPhone(phone);
+  if(phoneDigits.length<10){showErr('Please enter a valid 10-digit WhatsApp number.');return;}
   const db=JSON.parse(localStorage.getItem(DB_KEY)||'{}');
   if(db[email]){showErr('An account with this email already exists. Please login.');authSwitch('login');return;}
   db[email]={name,phone,pass};
   localStorage.setItem(DB_KEY,JSON.stringify(db));
 
-  await syncLeadToAdmin({name,email,phone},'New account signup on THTWAAT website.');
-  enterSite({name,email,phone});
+  const user={name,email,phone};
+  const synced=await pushLeadWithRetry(user,'New account signup on THTWAAT website.');
+  if(!synced){
+    console.warn('[THTWAAT Lead] Signup lead sync pending — will retry in background');
+  }
+  enterSite(user);
 }
 
 function enterSite(u){
@@ -665,15 +720,17 @@ function enterSite(u){
   document.getElementById('authGate').classList.add('hidden');
   document.getElementById('mainSite').style.display='block';
   document.getElementById('navUName').textContent=u.name.split(' ')[0];
-  // Prefill pay modal
   document.getElementById('pName').value=u.name;
   document.getElementById('pEmail').value=u.email;
   document.getElementById('pPhone').value=u.phone||'';
   initReveal();
+  scheduleLeadSync(u,'Website user active — lead sync.');
+  startBackgroundLeadSync(u);
 }
 
 function doLogout(){
   CU=null;
+  if(leadSyncInterval){clearInterval(leadSyncInterval);leadSyncInterval=null;}
   localStorage.removeItem(USR_KEY);
   document.getElementById('mainSite').style.display='none';
   document.getElementById('authGate').classList.remove('hidden');
@@ -687,7 +744,7 @@ function doLogout(){
   if(saved){
     try{
       const user=JSON.parse(saved);
-      await syncLeadToAdmin(user,'Returning user session on THTWAAT website.');
+      await pushLeadToAdmin(user,'Returning user session on THTWAAT website.');
       enterSite(user);
     }catch(e){
       localStorage.removeItem(USR_KEY);
@@ -754,7 +811,7 @@ async function launchRzp(){
   if(window.ThtwaatLeads){
     try{
       const savedLead=await ThtwaatLeads.submitWebsiteLead({
-        name,email,phone,
+        name,email,phone:normalizeClientPhone(phone),
         message:`Interested in ${selName}. Payment checkout started on website.`,
         source:'Website'
       });
