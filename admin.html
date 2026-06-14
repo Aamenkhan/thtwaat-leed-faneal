@@ -56,7 +56,7 @@ th{color:var(--muted);font-size:.75rem;text-transform:uppercase;letter-spacing:.
     <div>
       <div class="badge">THTWAAT Lead Ops</div>
       <h1>Admin Dashboard</h1>
-      <p class="sub">Live lead analytics from Excel + WhatsApp pipeline</p>
+      <p class="sub">Live lead analytics — auto-refreshes every 30 seconds</p>
     </div>
     <div class="auth">
       <input type="password" id="apiKey" placeholder="Enter ADMIN_API_KEY"/>
@@ -66,7 +66,7 @@ th{color:var(--muted);font-size:.75rem;text-transform:uppercase;letter-spacing:.
   </div>
 
   <a class="back" href="/">← Back to website</a>
-  <div id="status" class="loading" style="margin-top:1rem">Enter your admin API key to load leads.</div>
+  <div id="status" class="loading" style="margin-top:1rem">Enter ADMIN_API_KEY once — leads load automatically.</div>
 
   <div class="grid" id="stats" hidden>
     <div class="card"><div class="label">Total Leads</div><div class="value" id="totalLeads">0</div></div>
@@ -112,6 +112,9 @@ th{color:var(--muted);font-size:.75rem;text-transform:uppercase;letter-spacing:.
 
 <script>
 const API_BASE = window.THTWAAT_API_BASE || '';
+const ADMIN_KEY_STORAGE = 'tt_admin_api_key';
+const AUTO_REFRESH_MS = 30000;
+let refreshTimer = null;
 
 function topEntry(map) {
   const entries = Object.entries(map || {});
@@ -146,18 +149,20 @@ function formatTime(iso) {
   }
 }
 
-async function loadDashboard() {
+async function loadDashboard(silent = false) {
   const apiKey = document.getElementById('apiKey').value.trim();
   const status = document.getElementById('status');
 
   if (!apiKey) {
     status.className = 'error';
     status.textContent = 'Please enter ADMIN_API_KEY.';
-    return;
+    return false;
   }
 
-  status.className = 'loading';
-  status.textContent = 'Loading leads...';
+  if (!silent) {
+    status.className = 'loading';
+    status.textContent = 'Loading leads...';
+  }
 
   try {
     const response = await fetch(`${API_BASE}/leads`, {
@@ -168,6 +173,9 @@ async function loadDashboard() {
     if (!response.ok) {
       throw new Error(payload?.error?.message || 'Failed to load leads');
     }
+
+    localStorage.setItem(ADMIN_KEY_STORAGE, apiKey);
+    startAutoRefresh();
 
     const data = payload.data;
     document.getElementById('stats').hidden = false;
@@ -197,14 +205,31 @@ async function loadDashboard() {
 
     document.getElementById('leadRows').innerHTML = rows || '<tr><td colspan="7" class="empty">No leads yet</td></tr>';
     status.className = 'loading';
-    status.textContent = `Last updated: ${new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })}`;
+    status.textContent = `🟢 Live · ${data.totalLeads} leads · Last updated: ${new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })} · refreshes every 30s`;
+    return true;
   } catch (error) {
     status.className = 'error';
     status.textContent = error.message;
+    return false;
   }
 }
 
-document.getElementById('loadBtn').addEventListener('click', loadDashboard);
+function startAutoRefresh() {
+  if (refreshTimer) return;
+  refreshTimer = setInterval(() => loadDashboard(true), AUTO_REFRESH_MS);
+}
+
+function initAdminDashboard() {
+  const savedKey = localStorage.getItem(ADMIN_KEY_STORAGE);
+  if (savedKey) {
+    document.getElementById('apiKey').value = savedKey;
+    loadDashboard();
+    return;
+  }
+  document.getElementById('status').textContent = 'Enter ADMIN_API_KEY once — leads load automatically.';
+}
+
+document.getElementById('loadBtn').addEventListener('click', () => loadDashboard());
 document.getElementById('exportBtn').addEventListener('click', async () => {
   const apiKey = document.getElementById('apiKey').value.trim();
   const status = document.getElementById('status');
@@ -238,6 +263,8 @@ document.getElementById('exportBtn').addEventListener('click', async () => {
 document.getElementById('apiKey').addEventListener('keydown', (event) => {
   if (event.key === 'Enter') loadDashboard();
 });
+
+initAdminDashboard();
 </script>
 </body>
 </html>
