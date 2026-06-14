@@ -55,8 +55,12 @@
     return PLANS.find((p) => p.id === resolved) || PLANS[2];
   }
 
+  function formatUsd(paise) {
+    return '$' + Math.round(paise / 100).toLocaleString('en-US');
+  }
+
   function formatInr(paise) {
-    return '₹' + Math.round(paise / 100).toLocaleString('en-IN');
+    return formatUsd(paise);
   }
 
   window.THTWAAT_CATALOG = {
@@ -65,5 +69,6 @@
     resolvePlanId,
     getPlan,
     formatInr,
+    formatUsd,
   };
 })();

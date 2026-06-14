@@ -26,8 +26,8 @@
   }
 
   function formatInr(paise) {
-    if (catalog?.formatInr) return catalog.formatInr(paise);
-    return '₹' + Math.round(paise / 100).toLocaleString('en-IN');
+    if (catalog?.formatUsd) return catalog.formatUsd(paise);
+    return '$' + Math.round(paise / 100).toLocaleString('en-US');
   }
 
   function resolvePlanId(planId) {
@@ -304,7 +304,7 @@
           paymentMethod: method,
           customerUpi: upiId || '',
         },
-        theme: { color: method === 'upi' ? '#06D6A0' : '#F0B429' },
+        theme: { color: method === 'upi' ? '#10b981' : '#2563eb' },
         config: buildRazorpayConfig(method),
         modal: {
           ondismiss: function () {
