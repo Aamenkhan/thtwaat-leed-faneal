@@ -4,7 +4,6 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
 <title>Thtwaat Technology Solutions — Apps · Web · AI · Digital Marketing</title>
-<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Familjen+Grotesk:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet"/>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -552,40 +551,12 @@ footer{padding:2.5rem 5%;border-top:1px solid var(--border);position:relative;z-
 
 </div><!-- end mainSite -->
 
-<!-- ══ RAZORPAY PAYMENT MODAL ══ -->
-<div class="modal-ov" id="payModal">
-  <div class="modal-box">
-    <button class="m-close" onclick="closePay()">×</button>
-    <div class="m-h">Book a Service</div>
-    <div class="m-sub">Pay securely — UPI, Cards, Net Banking, EMI available</div>
-    <div class="pkg-opts" id="pkgOpts">
-      <div class="pkg-opt on" data-plan-id="mobile-app" onclick="selPkg(this,'mobile-app')"><input type="radio" name="sp" checked/><div class="pkg-on"><div class="pkg-nm">📱 Mobile App (Flutter)</div><div class="pkg-pr">₹29,999 — 21 day delivery</div></div></div>
-      <div class="pkg-opt" data-plan-id="website" onclick="selPkg(this,'website')"><input type="radio" name="sp"/><div class="pkg-on"><div class="pkg-nm">🌐 Website</div><div class="pkg-pr">₹9,999 — 7 day delivery</div></div></div>
-      <div class="pkg-opt" data-plan-id="web-app" onclick="selPkg(this,'web-app')"><input type="radio" name="sp"/><div class="pkg-on"><div class="pkg-nm">💻 Web App / SaaS</div><div class="pkg-pr">₹39,999 — 30 day delivery ⭐</div></div></div>
-      <div class="pkg-opt" data-plan-id="ai-automation" onclick="selPkg(this,'ai-automation')"><input type="radio" name="sp"/><div class="pkg-on"><div class="pkg-nm">🤖 AI Automation</div><div class="pkg-pr">₹19,999 — 14 day delivery</div></div></div>
-      <div class="pkg-opt" data-plan-id="ai-llm" onclick="selPkg(this,'ai-llm')"><input type="radio" name="sp"/><div class="pkg-on"><div class="pkg-nm">🧠 AI / LLM Project</div><div class="pkg-pr">₹59,999 — 35-45 day delivery</div></div></div>
-      <div class="pkg-opt" data-plan-id="digital-marketing" onclick="selPkg(this,'digital-marketing')"><input type="radio" name="sp"/><div class="pkg-on"><div class="pkg-nm">📊 Digital Marketing</div><div class="pkg-pr">₹7,999/month</div></div></div>
-    </div>
-    <div class="fld"><label>Name</label><input type="text" id="pName" placeholder="Full name"/></div>
-    <div class="fld"><label>Email</label><input type="email" id="pEmail" placeholder="you@email.com"/></div>
-    <div class="fld"><label>Phone</label><input type="tel" id="pPhone" placeholder="+91 XXXXX XXXXX"/></div>
-    <button class="m-submit" id="pBtn" onclick="launchRzp()">Pay Securely via Razorpay 🔒</button>
-    <div class="m-success" id="pSuccess">✅ Payment received! Our team will WhatsApp you within 2 hours to kick off your project.</div>
-    <div class="m-safe">🔒 100% Secure · UPI · Cards · Net Banking · EMI · Powered by Razorpay</div>
-  </div>
-</div>
-
 <script src="js/leads-api.js"></script>
-<script src="js/payments-api.js"></script>
 <script>
 // ═══════════════════════════════════
 //  STATE
 // ═══════════════════════════════════
-let CU = null; // current user
-let selPlanId = 'mobile-app';
-let paymentPlans = {};
-let selAmt = 2999900;
-let selName = 'Mobile App — Flutter';
+let CU = null;
 let ytVideoId = '';
 const API_BASE = window.THTWAAT_API_BASE || '';
 
@@ -732,9 +703,6 @@ function enterSite(u){
   document.getElementById('authGate').classList.add('hidden');
   document.getElementById('mainSite').style.display='block';
   document.getElementById('navUName').textContent=u.name.split(' ')[0];
-  document.getElementById('pName').value=u.name;
-  document.getElementById('pEmail').value=u.email;
-  document.getElementById('pPhone').value=u.phone||'';
   initReveal();
   scheduleLeadSync(u,'Website user active — lead sync.');
   startBackgroundLeadSync(u);
@@ -849,190 +817,24 @@ function loadYT() {
 initYoutube();
 loadYoutubeFromApi();
 
-// ═══════════════════════════════════
-//  PAYMENT MODAL + RAZORPAY
-// ═══════════════════════════════════
-async function loadPaymentConfig() {
-  if (!window.ThtwaatPayments) return;
-  try {
-    const config = await ThtwaatPayments.getConfig();
-    paymentPlans = Object.fromEntries((config.plans || []).map((plan) => [plan.id, plan]));
-    if (!config.configured) {
-      console.warn('[THTWAAT Pay] Razorpay keys not configured on server');
-    }
-    updatePayButton();
-  } catch (err) {
-    console.error('[THTWAAT Pay] Failed to load payment config', err.message);
-  }
-}
+// Payment buttons redirect to /checkout page
 
-function getSelectedPlan() {
-  return paymentPlans[selPlanId] || { id: selPlanId, name: selName, amount: selAmt };
-}
-
-function updatePayButton() {
-  const plan = getSelectedPlan();
-  selAmt = plan.amount || selAmt;
-  selName = plan.name || selName;
-  const btn = document.getElementById('pBtn');
-  if (!btn || btn.style.display === 'none') return;
-  btn.disabled = false;
-  btn.textContent = 'Pay ₹' + Math.round(selAmt / 100).toLocaleString('en-IN') + ' via Razorpay 🔒';
-}
-
-function resetPayModal() {
-  document.getElementById('pSuccess').style.display = 'none';
-  document.getElementById('pBtn').style.display = 'block';
-  updatePayButton();
+function goCheckout(planId) {
+  const url = planId ? '/checkout?plan=' + encodeURIComponent(planId) : '/checkout';
+  window.location.href = url;
 }
 
 function openPay() {
-  if (CU) {
-    document.getElementById('pName').value = CU.name || '';
-    document.getElementById('pEmail').value = CU.email || '';
-    document.getElementById('pPhone').value = CU.phone || '';
-  }
-  resetPayModal();
-  document.getElementById('payModal').classList.add('open');
-  document.body.style.overflow = 'hidden';
+  goCheckout();
 }
 
 function openPayFor(planId) {
-  selPlanId = planId;
-  document.querySelectorAll('.pkg-opt').forEach((el) => {
-    const match = el.dataset.planId === planId;
-    el.classList.toggle('on', match);
-    el.querySelector('input').checked = match;
-  });
-  updatePayButton();
-  openPay();
+  goCheckout(planId);
 }
 
-function closePay() {
-  document.getElementById('payModal').classList.remove('open');
-  document.body.style.overflow = '';
-}
-
-document.getElementById('payModal').addEventListener('click', function (e) {
-  if (e.target === this) closePay();
-});
-
-function selPkg(el, planId) {
-  document.querySelectorAll('.pkg-opt').forEach((x) => {
-    x.classList.remove('on');
-    x.querySelector('input').checked = false;
-  });
-  el.classList.add('on');
-  el.querySelector('input').checked = true;
-  selPlanId = planId;
-  updatePayButton();
-}
-
-async function launchRzp() {
-  const name = document.getElementById('pName').value.trim();
-  const email = document.getElementById('pEmail').value.trim();
-  const phone = document.getElementById('pPhone').value.trim();
-  const btn = document.getElementById('pBtn');
-
-  if (!name || !email || !phone) {
-    alert('Please fill your name, email, and phone number.');
-    return;
-  }
-
-  if (!/\S+@\S+\.\S+/.test(email)) {
-    alert('Please enter a valid email address.');
-    return;
-  }
-
-  const phoneDigits = normalizeClientPhone(phone);
-  if (phoneDigits.length < 10) {
-    alert('Please enter a valid 10-digit phone number.');
-    return;
-  }
-
-  if (!window.ThtwaatPayments) {
-    alert('Payment system not loaded. Please refresh the page.');
-    return;
-  }
-
-  btn.disabled = true;
-  btn.textContent = 'Creating order...';
-
-  try {
-    const order = await ThtwaatPayments.createOrder({
-      planId: selPlanId,
-      name,
-      email,
-      phone: phoneDigits,
-    });
-
-    const plan = getSelectedPlan();
-
-    const options = {
-      key: order.keyId,
-      amount: order.amount,
-      currency: order.currency || 'INR',
-      name: 'Thtwaat Technology Solutions',
-      description: order.planName || plan.name,
-      order_id: order.orderId,
-      handler: async function (resp) {
-        btn.textContent = 'Verifying payment...';
-        btn.disabled = true;
-        try {
-          const verified = await ThtwaatPayments.verifyPayment({
-            planId: selPlanId,
-            name,
-            email,
-            phone: phoneDigits,
-            razorpay_order_id: resp.razorpay_order_id,
-            razorpay_payment_id: resp.razorpay_payment_id,
-            razorpay_signature: resp.razorpay_signature,
-          });
-
-          document.getElementById('pSuccess').style.display = 'block';
-          document.getElementById('pSuccess').textContent =
-            '✅ Payment received! Payment ID: ' +
-            verified.paymentId +
-            '. Our team will WhatsApp you within 2 hours to kick off your project.';
-          btn.style.display = 'none';
-        } catch (err) {
-          alert(
-            'Payment completed but verification failed.\n\nPlease save this Payment ID and contact us:\n' +
-              resp.razorpay_payment_id +
-              '\n\nError: ' +
-              err.message,
-          );
-          updatePayButton();
-        }
-      },
-      prefill: { name, email, contact: phone },
-      notes: { service: order.planName || plan.name },
-      theme: { color: '#F0B429' },
-      modal: {
-        ondismiss: function () {
-          updatePayButton();
-        },
-      },
-    };
-
-    const rzp = new Razorpay(options);
-    rzp.on('payment.failed', function (r) {
-      alert('Payment failed: ' + (r.error?.description || 'Please try again.'));
-      updatePayButton();
-    });
-    rzp.open();
-    btn.disabled = false;
-    btn.textContent = 'Complete payment in Razorpay window...';
-  } catch (err) {
-    alert(
-      err.message +
-        '\n\nIf this is a new setup, add RAZORPAY_KEY_ID and RAZORPAY_KEY_SECRET in Vercel environment variables.',
-    );
-    updatePayButton();
-  }
-}
-
-loadPaymentConfig();
+window.openPay = openPay;
+window.openPayFor = openPayFor;
+window.goCheckout = goCheckout;
 
 // ═══════════════════════════════════
 //  SCROLL REVEAL
