@@ -567,6 +567,7 @@ footer{padding:2.5rem 5%;border-top:1px solid var(--border);position:relative;z-
   </div>
 </div>
 
+<script src="js/leads-api.js"></script>
 <script>
 // ═══════════════════════════════════
 //  STATE
@@ -608,7 +609,7 @@ function doLogin(){
   enterSite({name:db[email].name,email,phone:db[email].phone});
 }
 
-function doSignup(){
+async function doSignup(){
   hideErr();
   const name=document.getElementById('aSName').value.trim();
   const email=document.getElementById('aSEmail').value.trim();
@@ -621,6 +622,25 @@ function doSignup(){
   if(db[email]){showErr('An account with this email already exists. Please login.');authSwitch('login');return;}
   db[email]={name,phone,pass};
   localStorage.setItem(DB_KEY,JSON.stringify(db));
+
+  if(window.ThtwaatLeads){
+    try{
+      await ThtwaatLeads.submitWebsiteLead({
+        name,email,phone,
+        message:'New website signup — created free THTWAAT account.',
+        source:'Website'
+      });
+      console.info('[THTWAAT Lead] Signup captured for admin dashboard');
+    }catch(err){
+      console.error('[THTWAAT Lead] Signup lead failed (account still created locally)',{
+        message:err.message,
+        stack:err.stack
+      });
+    }
+  } else {
+    console.warn('[THTWAAT Lead] leads-api.js not loaded — signup not sent to admin');
+  }
+
   enterSite({name,email,phone});
 }
 
@@ -762,6 +782,5 @@ function initReveal(){
   els.forEach(el=>obs.observe(el));
 }
 </script>
-<script src="js/leads-api.js"></script>
 </body>
 </html>
