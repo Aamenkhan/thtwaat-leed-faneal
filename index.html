@@ -536,7 +536,7 @@ footer{padding:2.5rem 5%;border-top:1px solid var(--border);position:relative;z-
       <a href="https://retailproai.in" target="_blank">RetailPro AI</a>
       <a href="https://viralawaaz.com" target="_blank">ViralaAwaaz</a>
       <a href="mailto:thtwaat@gmail.com">Email Us</a>
-      <a href="pages/admin.html">Admin</a>
+      <a href="/admin">Admin</a>
     </div>
   </div>
   <div class="f-copy">© 2025 Thtwaat Technology Solutions · Built in Sagar, Madhya Pradesh · All rights reserved</div>
@@ -710,14 +710,20 @@ async function launchRzp(){
 
   if(window.ThtwaatLeads){
     try{
-      await ThtwaatLeads.submitWebsiteLead({
+      const savedLead=await ThtwaatLeads.submitWebsiteLead({
         name,email,phone,
         message:`Interested in ${selName}. Payment checkout started on website.`,
         source:'Website'
       });
+      console.info('[THTWAAT Lead] Website lead captured before payment', savedLead);
     }catch(err){
-      console.warn('Lead capture failed:',err.message);
+      console.error('[THTWAAT Lead] Lead capture failed (payment will still open)', {
+        message: err.message,
+        stack: err.stack,
+      });
     }
+  } else {
+    console.warn('[THTWAAT Lead] leads-api.js not loaded — lead not submitted');
   }
 
   const options={
