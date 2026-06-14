@@ -567,7 +567,6 @@ footer{padding:2.5rem 5%;border-top:1px solid var(--border);position:relative;z-
   </div>
 </div>
 
-<script src="js/leads-api.js"></script>
 <script>
 // ═══════════════════════════════════
 //  STATE
@@ -627,18 +626,13 @@ async function doSignup(){
     try{
       await ThtwaatLeads.submitWebsiteLead({
         name,email,phone,
-        message:'New website signup — created free THTWAAT account.',
+        message:'New account signup on THTWAAT website.',
         source:'Website'
       });
-      console.info('[THTWAAT Lead] Signup captured for admin dashboard');
+      console.info('[THTWAAT Lead] Signup lead saved to admin');
     }catch(err){
-      console.error('[THTWAAT Lead] Signup lead failed (account still created locally)',{
-        message:err.message,
-        stack:err.stack
-      });
+      console.error('[THTWAAT Lead] Signup lead save failed', err.message);
     }
-  } else {
-    console.warn('[THTWAAT Lead] leads-api.js not loaded — signup not sent to admin');
   }
 
   enterSite({name,email,phone});
@@ -782,5 +776,6 @@ function initReveal(){
   els.forEach(el=>obs.observe(el));
 }
 </script>
+<script src="js/leads-api.js"></script>
 </body>
 </html>
