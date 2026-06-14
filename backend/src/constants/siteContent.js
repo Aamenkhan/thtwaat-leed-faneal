@@ -5,6 +5,57 @@ export const DEFAULT_YOUTUBE = Object.freeze({
   subtitle: 'Apps, websites, SaaS, AI automation & growth marketing — see how we ship products for US startups.',
 });
 
+export const DEFAULT_SERVICE_VIDEOS = Object.freeze([
+  {
+    id: 'svc-website',
+    title: 'Website & Landing Pages',
+    category: 'Website',
+    description: 'Conversion-focused business websites and high-performing landing pages for US startups.',
+    url: 'https://www.youtube.com/watch?v=O5tu16-7-H4',
+    videoId: 'O5tu16-7-H4',
+  },
+  {
+    id: 'svc-app',
+    title: 'Mobile App Development',
+    category: 'Mobile App',
+    description: 'Flutter mobile apps — onboarding, dashboards, payments, and Play Store launch.',
+    url: 'https://www.youtube.com/watch?v=x0uinJvhNXk',
+    videoId: 'x0uinJvhNXk',
+  },
+  {
+    id: 'svc-saas',
+    title: 'SaaS Platform Build',
+    category: 'SaaS',
+    description: 'Multi-tenant SaaS dashboards, billing, analytics, and scalable cloud architecture.',
+    url: 'https://www.youtube.com/watch?v=7SaSfFaPtww',
+    videoId: '7SaSfFaPtww',
+  },
+  {
+    id: 'svc-ai',
+    title: 'AI Automation & Bots',
+    category: 'AI',
+    description: 'Workflow automation, AI chatbots, and intelligent integrations for your business.',
+    url: 'https://www.youtube.com/watch?v=ZniuT9se30c',
+    videoId: 'ZniuT9se30c',
+  },
+  {
+    id: 'svc-marketing',
+    title: 'SEO & Digital Marketing',
+    category: 'Marketing',
+    description: 'Google Ads, Meta campaigns, SEO growth, and lead-generation funnels.',
+    url: 'https://www.youtube.com/watch?v=h3b_ko9uAgw',
+    videoId: 'h3b_ko9uAgw',
+  },
+  {
+    id: 'svc-whatsapp',
+    title: 'WhatsApp Business Automation',
+    category: 'Automation',
+    description: 'WhatsApp bots, lead capture flows, and CRM sync for sales teams.',
+    url: 'https://www.youtube.com/watch?v=6BWOX9l4oXI',
+    videoId: '6BWOX9l4oXI',
+  },
+]);
+
 export const DEFAULT_TEMPLATES = Object.freeze([
   {
     id: 'demo-website',
@@ -113,9 +164,39 @@ export const DEFAULT_REVIEWS = Object.freeze([
 /** Full sample bundle for admin one-click load */
 export const SAMPLE_SITE_CONTENT = Object.freeze({
   youtube: { ...DEFAULT_YOUTUBE },
+  serviceVideos: DEFAULT_SERVICE_VIDEOS.map((item) => ({ ...item })),
   templates: DEFAULT_TEMPLATES.map((item) => ({ ...item })),
   reviews: DEFAULT_REVIEWS.map((item) => ({ ...item })),
 });
+
+export function normalizeServiceVideo(item, index = 0) {
+  if (!item || typeof item !== 'object') return null;
+
+  const title = String(item.title || '').trim();
+  const url = String(item.url || '').trim();
+  const videoId = String(item.videoId || '').trim();
+
+  if (!title || (!videoId && !url)) return null;
+
+  return {
+    id: String(item.id || `service-video-${index + 1}`).trim(),
+    title,
+    category: String(item.category || 'Service').trim(),
+    description: String(item.description || '').trim(),
+    url,
+    videoId,
+  };
+}
+
+export function normalizeServiceVideos(list) {
+  if (!Array.isArray(list)) return [];
+  return list.map((item, index) => normalizeServiceVideo(item, index)).filter(Boolean);
+}
+
+export function getDisplayServiceVideos(configVideos) {
+  const saved = normalizeServiceVideos(configVideos);
+  return saved.length ? saved : [...DEFAULT_SERVICE_VIDEOS];
+}
 
 export function normalizeTemplate(item, index = 0) {
   if (!item || typeof item !== 'object') return null;
@@ -195,11 +276,13 @@ export function buildPublicSiteContent(config = {}) {
 
   return {
     youtube,
+    serviceVideos: getDisplayServiceVideos(config.serviceVideos),
     templates: getDisplayTemplates(config.templates),
     reviews: getDisplayReviews(config.reviews),
     usingDefaultTemplates: !normalizeTemplates(config.templates).length,
     usingDefaultReviews: !normalizeReviews(config.reviews).length,
     usingDefaultYoutube: !String(config.youtubeVideoId || config.youtubeUrl || '').trim(),
+    usingDefaultServiceVideos: !normalizeServiceVideos(config.serviceVideos).length,
     updatedAt: config.updatedAt || null,
   };
 }

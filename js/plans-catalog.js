@@ -13,6 +13,7 @@
   ];
 
   const PLANS = [
+    { id: 'project-chat-start', name: 'Start Chat About This Project', amount: 100, delivery: 'Instant', category: 'starter', tagline: 'Pay $1 to unlock direct project chat & priority reply.', emoji: '💬', feats: ['Direct team chat access', 'Discuss your project scope', 'Priority 2-hour response', '$1 credited toward build'] },
     { id: 'website-start', name: 'Website Start', amount: 9900, delivery: '3–5 days', category: 'starter', tagline: 'Launch your first business website fast.', emoji: '🌐', feats: ['Up to 5 pages', 'Mobile responsive', 'WhatsApp button', 'Basic SEO'] },
     { id: 'landing-page-marketing', name: 'Landing Page Marketing', amount: 9900, delivery: '2–4 days', category: 'starter', tagline: 'High-converting page for ads & leads.', emoji: '🎯', feats: ['Single landing page', 'Lead capture form', 'Ad-ready layout', 'Fast delivery'] },
     { id: 'app-start', name: 'App Start Package', amount: 99900, delivery: '7–14 days', category: 'starter', tagline: 'MVP mobile app starter — Android ready.', emoji: '📱', feats: ['Flutter MVP', 'Firebase backend', 'Core screens', 'Play Store ready'] },

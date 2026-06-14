@@ -63,7 +63,15 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 .auth-err{background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.3);border-radius:7px;padding:.65rem 1rem;font-size:.82rem;color:#fca5a5;margin-bottom:1rem;display:none}
 
 /* ══ NAV ══ */
-nav{position:fixed;top:0;left:0;right:0;z-index:500;height:64px;display:flex;align-items:center;justify-content:space-between;padding:0 5%;background:rgba(5,8,22,.88);backdrop-filter:blur(16px);border-bottom:1px solid var(--border)}
+nav{position:fixed;top:50px;left:0;right:0;z-index:500;height:64px;display:flex;align-items:center;justify-content:space-between;padding:0 5%;background:rgba(5,8,22,.88);backdrop-filter:blur(16px);border-bottom:1px solid var(--border)}
+.project-chat-bar{position:fixed;top:0;left:0;right:0;z-index:600;height:50px;display:flex;align-items:center;justify-content:center;padding:0 4%;background:linear-gradient(90deg,#1d4ed8,#4f46e5);border-bottom:1px solid rgba(255,255,255,.12);box-shadow:0 4px 20px rgba(37,99,235,.35)}
+.project-chat-inner{display:flex;align-items:center;gap:.85rem;flex-wrap:wrap;justify-content:center;width:100%;max-width:1100px}
+.project-chat-inner p{margin:0;font-size:.84rem;color:#e2e8f0}
+.project-chat-inner strong{color:#fff}
+.project-chat-inner em{font-style:normal;color:#fde047;font-weight:700}
+.project-chat-btn{background:#fff;color:#1d4ed8;border:none;border-radius:8px;padding:.45rem 1rem;font-weight:700;font-size:.82rem;white-space:nowrap;transition:transform .15s,opacity .2s;cursor:pointer;font-family:var(--font)}
+.project-chat-btn:hover{transform:translateY(-1px);opacity:.95}
+@media(max-width:720px){.project-chat-bar{height:auto;padding:.55rem 4%}.project-chat-inner p{font-size:.72rem;text-align:center}.project-chat-btn{width:100%;margin-top:.25rem}}
 .nav-logo{font-family:var(--mono);font-weight:700;font-size:1.05rem;color:var(--gold)}
 .nav-logo span{color:var(--text)}
 .nav-right{display:flex;align-items:center;gap:1rem}
@@ -79,7 +87,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:500;height:64px;display:flex;ali
 @media(max-width:680px){.nav-links{display:none}}
 
 /* ══ HERO ══ */
-.hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:80px 5% 60px;text-align:center;position:relative;z-index:1}
+.hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:130px 5% 60px;text-align:center;position:relative;z-index:1}
 .hero-tag{display:inline-flex;align-items:center;gap:8px;border-radius:100px;padding:.38rem 1rem;font-family:var(--mono);font-size:.72rem;letter-spacing:.8px;text-transform:uppercase;margin-bottom:1.75rem}
 .hero h1{font-size:clamp(2.4rem,6vw,4.5rem);font-weight:700;letter-spacing:-2px;line-height:1.05;margin-bottom:1.25rem;max-width:820px}
 .hero h1 .hi{color:#60a5fa}
@@ -92,10 +100,13 @@ nav{position:fixed;top:0;left:0;right:0;z-index:500;height:64px;display:flex;ali
 .hero-ctas{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;margin-bottom:1.5rem}
 .btn-g{background:var(--gold);color:#fff;border:none;border-radius:10px;padding:.9rem 1.75rem;font-family:var(--font);font-weight:700;font-size:1rem;transition:opacity .2s,transform .15s;display:inline-block;box-shadow:0 10px 28px rgba(37,99,235,.28)}
 .btn-g:hover{opacity:.92;transform:translateY(-2px)}
+.btn-chat-start{background:linear-gradient(135deg,#10b981,#059669);color:#fff;border:none;box-shadow:0 10px 28px rgba(16,185,129,.32)}
+.btn-chat-start:hover{opacity:.95;transform:translateY(-2px)}
 .btn-video{background:transparent;color:var(--text);border:1px solid var(--border2);box-shadow:none}
 .btn-video:hover{border-color:rgba(255,255,255,.25);background:rgba(255,255,255,.04)}
 .hero-trust{margin-bottom:2.5rem}
 .p-btn.solid{background:var(--gold);color:#fff}
+.p-btn.btn-chat-start{background:linear-gradient(135deg,#10b981,#059669);color:#fff}
 .p-hot-badge{background:var(--gold);color:#fff}
 .pq-card strong{color:#93c5fd}
 .yt-play-btn svg{fill:#fff}
@@ -125,6 +136,19 @@ section{position:relative;z-index:1;padding:6rem 5%}
 .yt-label{font-weight:600;font-size:1rem;color:var(--text)}
 .yt-sublabel{font-size:.8rem;color:var(--muted)}
 .video-play-btn{margin-top:1.25rem}
+.service-videos-section{background:var(--bg);border-bottom:1px solid var(--border)}
+.service-videos-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.25rem;margin-top:3rem}
+.svc-video-card{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r2);overflow:hidden;transition:transform .25s,border-color .25s}
+.svc-video-card:hover{transform:translateY(-3px);border-color:rgba(37,99,235,.35)}
+.svc-video-thumb{position:relative;aspect-ratio:16/9;background:var(--bg2) center/cover no-repeat;cursor:pointer;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.svc-video-thumb::before{content:'';position:absolute;inset:0;background:rgba(0,0,0,.38);transition:background .2s}
+.svc-video-thumb:hover::before{background:rgba(0,0,0,.5)}
+.svc-video-thumb .yt-play-btn{position:relative;z-index:1;width:56px;height:56px}
+.svc-video-thumb iframe{position:absolute;inset:0;width:100%;height:100%;border:none;z-index:2}
+.svc-video-body{padding:1.25rem}
+.svc-video-cat{font-family:var(--mono);font-size:.65rem;color:var(--gold);text-transform:uppercase;letter-spacing:1px}
+.svc-video-body h3{font-size:1rem;font-weight:700;margin:.4rem 0}
+.svc-video-body p{font-size:.82rem;color:var(--muted);line-height:1.6;margin:0}
 .video-id-input{display:none}
 .video-points{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem;margin-top:2.5rem}
 .vp{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:1.25rem;display:flex;align-items:flex-start;gap:.75rem}
@@ -327,21 +351,29 @@ footer{padding:2.5rem 5%;border-top:1px solid var(--border);position:relative;z-
 ═══════════════════════════════════ -->
 <div id="mainSite" style="display:none">
 
+<!-- TOP: $1 START CHAT BAR -->
+<div class="project-chat-bar rev" id="projectChatBar">
+  <div class="project-chat-inner">
+    <p><strong>💬 Start Chat About This Project</strong> — pay just <em>$1</em> to connect with our team instantly</p>
+    <button type="button" class="project-chat-btn" onclick="openPayFor('project-chat-start')">Pay $1 &amp; Start Chat →</button>
+  </div>
+</div>
+
 <!-- NAV -->
 <nav>
   <div class="nav-logo">TT<span>.tech</span></div>
   <div class="nav-links">
     <a href="#how">Demo</a>
+    <a href="#service-videos">Services</a>
     <a href="#templates">Templates</a>
     <a href="#apps">Work</a>
     <a href="#reviews">Reviews</a>
     <a href="#pricing">Pricing</a>
-    <a href="#mvp">Free Call</a>
   </div>
   <div class="nav-right">
     <div class="nav-user"><div class="nav-dot"></div><span id="navUName">User</span></div>
     <button class="nav-logout" onclick="doLogout()">Logout</button>
-    <button class="nav-cta" onclick="openPay()">Get Started</button>
+    <button class="nav-cta" onclick="openPayFor('project-chat-start')">Start Chat $1</button>
   </div>
 </nav>
 
@@ -352,8 +384,9 @@ footer{padding:2.5rem 5%;border-top:1px solid var(--border);position:relative;z-
     <h1 class="rev">Turn Your Idea Into a<br/><span class="hi">Live Product.</span><br/><span class="h2">Ship Faster.</span></h1>
     <p class="hero-desc rev">Full-stack mobile apps, SaaS platforms, AI automation, and growth marketing for US startups and SMBs — transparent pricing, secure checkout, zero guesswork.</p>
     <div class="hero-ctas rev">
+      <button class="btn-g btn-chat-start" onclick="openPayFor('project-chat-start')">💬 Start Chat — Only $1</button>
       <button class="btn-g" onclick="openPayFor('website-start')">Get Started — From $99</button>
-      <a href="#pricing" class="btn-o">View All Pricing</a>
+      <a href="#service-videos" class="btn-o">Watch Service Videos</a>
       <button class="btn-video" id="heroWatchBtn" hidden onclick="scrollToVideoAndPlay()">▶ Watch Demo Video</button>
     </div>
     <div class="trust-bar hero-trust rev">
@@ -364,8 +397,8 @@ footer{padding:2.5rem 5%;border-top:1px solid var(--border);position:relative;z-
     </div>
     <div class="hero-stats rev">
       <div class="stat-item"><div class="stat-n">50+</div><div class="stat-l">Products Shipped</div></div>
-      <div class="stat-item"><div class="stat-n">22</div><div class="stat-l">Service Packages</div></div>
-      <div class="stat-item"><div class="stat-n">$0</div><div class="stat-l">Strategy Call Fee</div></div>
+      <div class="stat-item"><div class="stat-n">23</div><div class="stat-l">Service Packages</div></div>
+      <div class="stat-item"><div class="stat-n">$1</div><div class="stat-l">Start Project Chat</div></div>
       <div class="stat-item"><div class="stat-n">100%</div><div class="stat-l">Fixed Pricing</div></div>
     </div>
   </div>
@@ -394,6 +427,19 @@ footer{padding:2.5rem 5%;border-top:1px solid var(--border);position:relative;z-
     <div class="vp"><div class="vp-icon">📐</div><div><div class="vp-t">Design & Plan</div><div class="vp-d">Clear scope, wireframes, and fixed price.</div></div></div>
     <div class="vp"><div class="vp-icon">⚡</div><div><div class="vp-t">Rapid Build</div><div class="vp-d">Weekly demos, fast iterations, real delivery.</div></div></div>
     <div class="vp"><div class="vp-icon">🚀</div><div><div class="vp-t">Launch & Scale</div><div class="vp-d">Deploy, go live, ongoing support.</div></div></div>
+  </div>
+</section>
+
+<!-- SERVICE VIDEOS -->
+<section id="service-videos" class="service-videos-section">
+  <div class="sec-tag">Service Videos</div>
+  <h2 class="sec-h">See Our Services in Action</h2>
+  <p class="sec-sub">Watch how we build websites, mobile apps, SaaS platforms, AI automation, marketing, and WhatsApp flows — click any video to play.</p>
+  <div class="service-videos-grid" id="serviceVideosGrid">
+    <div class="content-empty">Loading service videos…</div>
+  </div>
+  <div style="text-align:center;margin-top:2.5rem" class="rev">
+    <button class="btn-g btn-chat-start" onclick="openPayFor('project-chat-start')">Ready? Start Chat About Your Project — $1 →</button>
   </div>
 </section>
 
@@ -458,7 +504,7 @@ footer{padding:2.5rem 5%;border-top:1px solid var(--border);position:relative;z-
 <section id="pricing" class="pricing-section">
   <div class="sec-tag">Transparent Pricing</div>
   <h2 class="sec-h">Fixed Pricing.<br/>Fast Checkout.</h2>
-  <p class="sec-sub">22 packages from $99 to enterprise — pick a plan, pay with card or UPI, and we start within 2 hours.</p>
+  <p class="sec-sub">23 packages from $1 to enterprise — pick a plan, pay with card or UPI, and we start within 2 hours.</p>
   <div id="pricingCatalog"></div>
 </section>
 

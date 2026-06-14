@@ -8,6 +8,15 @@ export const PLAN_CATEGORIES = Object.freeze([
 ]);
 
 export const PAYMENT_PLANS = Object.freeze({
+  'project-chat-start': {
+    id: 'project-chat-start',
+    name: 'Start Chat About This Project',
+    amount: 100,
+    delivery: 'Instant access',
+    category: 'starter',
+    tagline: 'Pay $1 to unlock direct project chat and priority response.',
+    emoji: '💬',
+  },
   'website-start': {
     id: 'website-start',
     name: 'Website Start',

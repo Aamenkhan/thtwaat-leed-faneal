@@ -91,6 +91,46 @@
     if (window.initReveal) window.initReveal();
   }
 
+  function renderServiceVideos(videos) {
+    const root = document.getElementById('serviceVideosGrid');
+    if (!root) return;
+
+    if (!videos.length) {
+      root.innerHTML = '<div class="content-empty">Service videos will appear here once added in Admin.</div>';
+      return;
+    }
+
+    root.innerHTML = videos
+      .map((item) => {
+        const videoId = item.videoId || '';
+        const thumb = videoId
+          ? `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`
+          : '';
+        return `
+          <article class="svc-video-card rev" data-video-id="${escapeHtml(videoId)}">
+            <div class="svc-video-thumb" style="background-image:url('${thumb}')" onclick="playServiceVideo('${escapeHtml(videoId)}', this)" role="button" tabindex="0" aria-label="Play ${escapeHtml(item.title)}">
+              <div class="yt-play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
+            </div>
+            <div class="svc-video-body">
+              <div class="svc-video-cat">${escapeHtml(item.category || 'Service')}</div>
+              <h3>${escapeHtml(item.title)}</h3>
+              <p>${escapeHtml(item.description || '')}</p>
+            </div>
+          </article>`;
+      })
+      .join('');
+
+    if (window.initReveal) window.initReveal();
+  }
+
+  function playServiceVideo(videoId, el) {
+    if (!videoId || !el) return;
+    if (el.querySelector('iframe')) return;
+    el.innerHTML = `<iframe src="https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0" title="Service video" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
+  }
+
+  window.playServiceVideo = playServiceVideo;
+
   function applyYoutubeContent(youtube) {
     const videoId = youtube?.videoId || '';
     const title = youtube?.title || 'Company Services Demo';
@@ -133,11 +173,13 @@
 
       const data = payload.data || {};
       applyYoutubeContent(data.youtube);
+      renderServiceVideos(data.serviceVideos || []);
       renderTemplates(data.templates || []);
       renderReviews(data.reviews || []);
     } catch (error) {
       console.warn('[Site Content]', error.message);
       applyYoutubeContent({});
+      renderServiceVideos([]);
       renderTemplates([]);
       renderReviews([]);
     }
