@@ -132,6 +132,36 @@ section{position:relative;z-index:1;padding:6rem 5%}
 .vp-t{font-weight:600;font-size:.9rem;margin-bottom:.25rem}
 .vp-d{font-size:.8rem;color:var(--muted)}
 
+/* ══ TEMPLATES ══ */
+.templates-section{background:var(--bg);border-bottom:1px solid var(--border)}
+.templates-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1.25rem;margin-top:3rem}
+.template-card{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r2);overflow:hidden;display:flex;flex-direction:column;transition:transform .25s,border-color .25s}
+.template-card:hover{transform:translateY(-4px);border-color:rgba(37,99,235,.35)}
+.template-media{position:relative;aspect-ratio:16/10;background:linear-gradient(135deg,rgba(37,99,235,.12),var(--bg2));overflow:hidden}
+.template-media img{width:100%;height:100%;object-fit:cover}
+.template-fallback{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:.75rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px}
+.template-badge{position:absolute;top:12px;left:12px;background:var(--gold);color:#fff;font-size:.68rem;font-weight:700;padding:4px 10px;border-radius:100px;text-transform:uppercase}
+.template-body{padding:1.5rem;display:flex;flex-direction:column;flex:1}
+.template-cat{font-family:var(--mono);font-size:.68rem;color:var(--gold);text-transform:uppercase;letter-spacing:1px;margin-bottom:.5rem}
+.template-card h3{font-size:1.05rem;font-weight:700;margin-bottom:.5rem}
+.template-card p{font-size:.85rem;color:var(--muted);line-height:1.65;flex:1;margin-bottom:1.25rem}
+.template-link{display:inline-flex;align-items:center;gap:6px;background:transparent;border:1px solid var(--border2);border-radius:8px;padding:.6rem 1rem;font-size:.82rem;font-weight:600;color:var(--text);cursor:pointer;transition:border-color .2s,background .2s;align-self:flex-start;text-decoration:none}
+.template-link:hover{border-color:rgba(37,99,235,.45);background:rgba(37,99,235,.08)}
+
+/* ══ REVIEWS ══ */
+.reviews-section{background:var(--bg2);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+.reviews-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.25rem;margin-top:3rem}
+.review-card{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r2);padding:1.75rem;display:flex;flex-direction:column;transition:border-color .25s,transform .25s}
+.review-card:hover{border-color:rgba(37,99,235,.3);transform:translateY(-2px)}
+.review-stars{color:#fbbf24;font-size:1rem;letter-spacing:2px;margin-bottom:1rem}
+.review-text{font-size:.95rem;line-height:1.75;color:var(--text);flex:1;margin-bottom:1.5rem;font-style:italic}
+.review-author{display:flex;align-items:center;gap:.85rem;padding-top:1rem;border-top:1px solid var(--border)}
+.review-avatar{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,var(--gold),var(--purple));display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.85rem;color:#fff;overflow:hidden;flex-shrink:0}
+.review-avatar img{width:100%;height:100%;object-fit:cover}
+.review-author strong{display:block;font-size:.9rem;margin-bottom:2px}
+.review-author span{font-size:.78rem;color:var(--muted)}
+.content-empty{grid-column:1/-1;text-align:center;padding:3rem 1rem;color:var(--muted);border:1px dashed var(--border);border-radius:var(--r2)}
+
 /* ══ LIVE APPS ══ */
 .apps-section{background:var(--bg)}
 .apps-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1.25rem;margin-top:3rem}
@@ -301,8 +331,10 @@ footer{padding:2.5rem 5%;border-top:1px solid var(--border);position:relative;z-
 <nav>
   <div class="nav-logo">TT<span>.tech</span></div>
   <div class="nav-links">
-    <a href="#how">Process</a>
+    <a href="#how">Demo</a>
+    <a href="#templates">Templates</a>
     <a href="#apps">Work</a>
+    <a href="#reviews">Reviews</a>
     <a href="#pricing">Pricing</a>
     <a href="#mvp">Free Call</a>
   </div>
@@ -322,6 +354,7 @@ footer{padding:2.5rem 5%;border-top:1px solid var(--border);position:relative;z-
     <div class="hero-ctas rev">
       <button class="btn-g" onclick="openPayFor('website-start')">Get Started — From $99</button>
       <a href="#pricing" class="btn-o">View All Pricing</a>
+      <button class="btn-video" id="heroWatchBtn" hidden onclick="scrollToVideoAndPlay()">▶ Watch Demo Video</button>
     </div>
     <div class="trust-bar hero-trust rev">
       <span>🔒 Secure Checkout</span>
@@ -338,22 +371,22 @@ footer{padding:2.5rem 5%;border-top:1px solid var(--border);position:relative;z-
   </div>
 </section>
 
-<!-- HOW WE WORK — YouTube Video -->
+<!-- COMPANY DEMO VIDEO -->
 <section id="how" class="video-section">
-  <div class="sec-tag">Our Process</div>
-  <h2 class="sec-h">Simple. Transparent. Built to Convert.</h2>
-  <p class="sec-sub">From discovery to launch — the same clear process US clients expect from a modern product studio.</p>
-  <div class="video-wrap rev" id="videoWrap" hidden>
+  <div class="sec-tag">Company Demo</div>
+  <h2 class="sec-h" id="videoTitle">Company Services Demo</h2>
+  <p class="sec-sub" id="videoSubtitle">Watch how we deliver apps, websites, AI automation, and full product ecosystems for US clients.</p>
+  <div class="video-wrap rev" id="videoWrap">
     <div class="yt-frame" id="ytFrame">
       <div class="yt-placeholder" id="ytPlaceholder" onclick="loadYT()">
         <div class="yt-play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
-        <div class="yt-label">How Thtwaat Works — Company Overview</div>
-        <div class="yt-sublabel">Click to play video</div>
+        <div class="yt-label" id="ytLabel">Company Services Demo</div>
+        <div class="yt-sublabel">Add your demo video in Admin — or click play when video is set</div>
       </div>
     </div>
     <button type="button" class="btn-video video-play-btn" id="videoPlayBtn" onclick="loadYT()">
       <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-      Play Video on Website
+      Play Company Demo Video
     </button>
   </div>
   <div class="video-points rev">
@@ -361,6 +394,16 @@ footer{padding:2.5rem 5%;border-top:1px solid var(--border);position:relative;z-
     <div class="vp"><div class="vp-icon">📐</div><div><div class="vp-t">Design & Plan</div><div class="vp-d">Clear scope, wireframes, and fixed price.</div></div></div>
     <div class="vp"><div class="vp-icon">⚡</div><div><div class="vp-t">Rapid Build</div><div class="vp-d">Weekly demos, fast iterations, real delivery.</div></div></div>
     <div class="vp"><div class="vp-icon">🚀</div><div><div class="vp-t">Launch & Scale</div><div class="vp-d">Deploy, go live, ongoing support.</div></div></div>
+  </div>
+</section>
+
+<!-- CLIENT TEMPLATES -->
+<section id="templates" class="templates-section">
+  <div class="sec-tag">Client Templates</div>
+  <h2 class="sec-h">Ready-to-Launch Templates</h2>
+  <p class="sec-sub">Professional starter templates for websites, mobile apps, SaaS dashboards, and AI automation — customize and ship faster.</p>
+  <div class="templates-grid" id="templatesGrid">
+    <div class="content-empty">Loading templates…</div>
   </div>
 </section>
 
@@ -398,6 +441,16 @@ footer{padding:2.5rem 5%;border-top:1px solid var(--border);position:relative;z-
       <div class="app-tags"><span class="tag">Hono.js</span><span class="tag">Supabase</span><span class="tag">Shopify</span><span class="tag">OpenStreetMap</span></div>
       <a href="https://thtwaat.com" target="_blank" class="app-link"><div class="live-dot"></div> Visit thtwaat.com →</a>
     </div>
+  </div>
+</section>
+
+<!-- CLIENT REVIEWS -->
+<section id="reviews" class="reviews-section">
+  <div class="sec-tag">Client Reviews</div>
+  <h2 class="sec-h">Trusted by Founders &amp; Teams</h2>
+  <p class="sec-sub">Real feedback from US and global clients who shipped products with Thtwaat — professional delivery, clear pricing, on-time launch.</p>
+  <div class="reviews-grid" id="reviewsGrid">
+    <div class="content-empty">Loading reviews…</div>
   </div>
 </section>
 
@@ -663,64 +716,54 @@ function initYoutube() {
     placeholder.classList.remove('has-thumb');
     placeholder.style.backgroundImage = '';
   }
+  const wrap = document.getElementById('videoWrap');
+  if (wrap) wrap.hidden = false;
 }
 
 function setYoutubeUiVisible(visible) {
-  const wrap = document.getElementById('videoWrap');
   const heroBtn = document.getElementById('heroWatchBtn');
-  if (wrap) wrap.hidden = !visible;
   if (heroBtn) heroBtn.hidden = !visible;
 }
 
 function applyYoutubeVideo(url, videoId) {
   ytVideoId = videoId || parseYoutubeId(url);
+  const placeholder = document.getElementById('ytPlaceholder');
+
   if (!ytVideoId) {
     setYoutubeUiVisible(false);
+    if (placeholder) {
+      placeholder.classList.remove('has-thumb');
+      placeholder.style.backgroundImage = '';
+    }
     return;
   }
 
-  const placeholder = document.getElementById('ytPlaceholder');
   if (placeholder) {
     placeholder.classList.add('has-thumb');
     placeholder.style.backgroundImage = 'url(https://img.youtube.com/vi/' + ytVideoId + '/hqdefault.jpg)';
+    const sublabel = placeholder.querySelector('.yt-sublabel');
+    if (sublabel) sublabel.textContent = 'Click to play video';
   }
   setYoutubeUiVisible(true);
 }
 
+window.applyYoutubeVideo = applyYoutubeVideo;
+
 function scrollToVideoAndPlay() {
-  if (!ytVideoId) {
-    alert('YouTube video abhi set nahi hai.\n\nAdmin panel se link add karein: /admin');
-    return;
-  }
   const section = document.getElementById('how');
   if (section) section.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  setTimeout(loadYT, 450);
-}
-
-async function loadYoutubeFromApi() {
-  try {
-    const response = await fetch(`${API_BASE}/settings/youtube`);
-    const payload = await response.json();
-    if (!response.ok) return;
-
-    const url = payload?.data?.url || '';
-    const videoId = payload?.data?.videoId || '';
-    applyYoutubeVideo(url, videoId);
-  } catch {
-    // Ignore — video section stays hidden until admin sets a link
-  }
+  if (ytVideoId) setTimeout(loadYT, 450);
 }
 
 function loadYT() {
   if (!ytVideoId) {
-    alert('YouTube video abhi set nahi hai.\n\nAdmin panel se link add karein: /admin');
+    alert('Demo video is not set yet.\n\nAdd your YouTube link in Admin → Website Content Manager.');
     return;
   }
   embedYoutube(true);
 }
 
 initYoutube();
-loadYoutubeFromApi();
 
 // Payment buttons redirect to /checkout page
 
@@ -753,5 +796,6 @@ function initReveal(){
 }
 window.initReveal = initReveal;
 </script>
+<script src="js/site-content.js"></script>
 </body>
 </html>

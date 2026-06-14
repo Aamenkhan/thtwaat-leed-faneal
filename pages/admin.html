@@ -57,6 +57,22 @@ th{color:var(--muted);font-size:.75rem;text-transform:uppercase;letter-spacing:.
 .youtube-actions{display:flex;gap:.75rem;flex-wrap:wrap;margin-top:1rem}
 .youtube-actions .btn-outline{display:inline-block;padding:.75rem 1.1rem;border-radius:8px;font-weight:700;text-decoration:none;background:transparent;border:1px solid var(--border2);color:var(--text)}
 .youtube-actions .btn-outline:hover{border-color:var(--gold);color:var(--gold)}
+.content-panel{border-color:rgba(37,99,235,.28);background:linear-gradient(135deg,rgba(37,99,235,.06),var(--bg2))}
+.content-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+@media(max-width:820px){.content-grid{grid-template-columns:1fr}}
+.content-block{background:var(--bg3);border:1px solid var(--border);border-radius:12px;padding:1rem;margin-top:1rem}
+.content-block h3{font-size:.95rem;margin-bottom:.75rem}
+.field-grid{display:grid;grid-template-columns:1fr 1fr;gap:.75rem}
+@media(max-width:640px){.field-grid{grid-template-columns:1fr}}
+.field-grid .full{grid-column:1/-1}
+.field-grid label{display:block;font-size:.72rem;color:var(--muted);margin-bottom:.3rem;text-transform:uppercase}
+.field-grid input,.field-grid textarea,.field-grid select{width:100%;background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:.7rem .85rem;color:var(--text);font-family:var(--mono);font-size:.8rem}
+.field-grid textarea{min-height:72px;resize:vertical;font-family:var(--font)}
+.item-row{display:flex;justify-content:space-between;align-items:center;gap:1rem;padding:.75rem 0;border-bottom:1px solid var(--border)}
+.item-row:last-child{border-bottom:none}
+.item-meta{font-size:.78rem;color:var(--muted);margin-top:.2rem}
+.btn-danger{background:rgba(239,68,68,.15);color:#fca5a5;border:1px solid rgba(239,68,68,.25)}
+.content-actions{display:flex;gap:.75rem;flex-wrap:wrap;margin-top:1rem}
 </style>
 </head>
 <body>
@@ -74,18 +90,60 @@ th{color:var(--muted);font-size:.75rem;text-transform:uppercase;letter-spacing:.
     </div>
   </div>
 
-  <div class="panel youtube-panel" id="youtubePanel" style="margin-bottom:1.5rem">
-    <h2>📺 YouTube Link — Website par Video</h2>
-    <p class="sub" style="margin-bottom:1rem">Yahan YouTube URL paste karein aur <strong>Save to Website</strong> dabayein. Website par red <strong>Watch Company Video</strong> button dikhega.</p>
-    <div class="form-row">
-      <input type="url" id="youtubeUrl" placeholder="https://www.youtube.com/watch?v=... ya youtu.be/..."/>
-      <button class="btn btn-secondary" id="saveYoutubeBtn">Save to Website</button>
+  <div class="panel content-panel" id="contentPanel" style="margin-bottom:1.5rem">
+    <h2>🌐 Website Content Manager</h2>
+    <p class="sub" style="margin-bottom:1rem">Add company demo video, client templates, and professional reviews — updates live on the website instantly.</p>
+    <div id="contentStatus" class="loading">Manage website content below. Enter ADMIN_API_KEY to save.</div>
+
+    <div class="content-block">
+      <h3>📺 Company Demo YouTube Video</h3>
+      <div class="field-grid">
+        <div class="full"><label>YouTube URL</label><input type="url" id="youtubeUrl" placeholder="https://www.youtube.com/watch?v=..."/></div>
+        <div><label>Video Title</label><input type="text" id="youtubeTitle" placeholder="Company Services Demo"/></div>
+        <div><label>Video Subtitle</label><input type="text" id="youtubeSubtitle" placeholder="Watch how we build and launch products"/></div>
+      </div>
+      <div class="content-actions">
+        <button class="btn btn-secondary" id="saveYoutubeBtn">Save Video to Website</button>
+        <a class="btn-outline" href="/#how" target="_blank" rel="noopener">Preview on Website →</a>
+      </div>
+      <div id="youtubeStatus" class="loading" style="margin-top:1rem"></div>
     </div>
-    <div class="youtube-actions">
-      <a class="btn-outline" href="/#how" target="_blank" rel="noopener">Website par dekhein →</a>
+
+    <div class="content-grid">
+      <div class="content-block">
+        <h3>🎨 Client Templates</h3>
+        <div class="field-grid">
+          <div class="full"><label>Template Title</label><input type="text" id="tplTitle" placeholder="SaaS Dashboard Template"/></div>
+          <div><label>Category</label><input type="text" id="tplCategory" placeholder="Website / App / AI"/></div>
+          <div><label>Badge</label><input type="text" id="tplBadge" placeholder="Popular"/></div>
+          <div class="full"><label>Description</label><textarea id="tplDesc" placeholder="Short description for website card"></textarea></div>
+          <div class="full"><label>Image URL</label><input type="url" id="tplImage" placeholder="https://... (optional)"/></div>
+          <div class="full"><label>Preview / Checkout Link</label><input type="url" id="tplLink" placeholder="/checkout?plan=website-start"/></div>
+        </div>
+        <div class="content-actions">
+          <button class="btn btn-secondary" id="addTemplateBtn">Add Template</button>
+          <button class="btn" id="saveTemplatesBtn">Save Templates</button>
+        </div>
+        <div id="templateList" style="margin-top:1rem"></div>
+      </div>
+
+      <div class="content-block">
+        <h3>⭐ Client Reviews</h3>
+        <div class="field-grid">
+          <div><label>Client Name</label><input type="text" id="revName" placeholder="Michael R."/></div>
+          <div><label>Rating</label><select id="revRating"><option value="5">5 Stars</option><option value="4">4 Stars</option><option value="3">3 Stars</option></select></div>
+          <div><label>Role</label><input type="text" id="revRole" placeholder="CEO"/></div>
+          <div><label>Company</label><input type="text" id="revCompany" placeholder="ScaleUp Labs · Austin, TX"/></div>
+          <div class="full"><label>Review Text</label><textarea id="revText" placeholder="Professional client testimonial..."></textarea></div>
+          <div class="full"><label>Avatar Image URL</label><input type="url" id="revAvatar" placeholder="https://... (optional)"/></div>
+        </div>
+        <div class="content-actions">
+          <button class="btn btn-secondary" id="addReviewBtn">Add Review</button>
+          <button class="btn" id="saveReviewsBtn">Save Reviews</button>
+        </div>
+        <div id="reviewList" style="margin-top:1rem"></div>
+      </div>
     </div>
-    <div id="youtubeStatus" class="loading" style="margin-top:1rem">YouTube link yahan se manage hoti hai.</div>
-    <div id="youtubePreview" class="youtube-preview" hidden></div>
   </div>
 
   <a class="back" href="/">← Back to website</a>
@@ -199,7 +257,7 @@ async function loadDashboard(silent = false) {
 
     localStorage.setItem(ADMIN_KEY_STORAGE, apiKey);
     startAutoRefresh();
-    loadYoutubeSetting();
+    if (window.AdminContent) AdminContent.loadAllContent();
 
     const data = payload.data;
     document.getElementById('stats').hidden = false;
@@ -244,7 +302,7 @@ function startAutoRefresh() {
 }
 
 function initAdminDashboard() {
-  loadYoutubeSetting();
+  if (window.AdminContent) AdminContent.loadAllContent();
   const savedKey = localStorage.getItem(ADMIN_KEY_STORAGE);
   if (savedKey) {
     document.getElementById('apiKey').value = savedKey;
@@ -254,97 +312,6 @@ function initAdminDashboard() {
   document.getElementById('status').textContent = 'Enter ADMIN_API_KEY once — leads load automatically.';
 }
 
-function renderYoutubePreview(url, videoId) {
-  const preview = document.getElementById('youtubePreview');
-  if (!url && !videoId) {
-    preview.hidden = true;
-    preview.innerHTML = '';
-    return;
-  }
-  preview.hidden = false;
-  const watchUrl = url || ('https://www.youtube.com/watch?v=' + videoId);
-  preview.innerHTML = 'Live on website: <a href="' + watchUrl + '" target="_blank" rel="noopener">' + watchUrl + '</a>';
-}
-
-async function loadYoutubeSetting() {
-  const status = document.getElementById('youtubeStatus');
-  const apiKey = document.getElementById('apiKey').value.trim();
-
-  try {
-    const response = await fetch(`${API_BASE}/settings/youtube`);
-    const payload = await response.json();
-    if (!response.ok) {
-      throw new Error(payload?.error?.message || 'Failed to load YouTube settings');
-    }
-
-    const url = payload?.data?.url || '';
-    const videoId = payload?.data?.videoId || '';
-    document.getElementById('youtubeUrl').value = url;
-
-    if (url || videoId) {
-      renderYoutubePreview(url, videoId);
-      status.className = 'loading';
-      status.textContent = apiKey
-        ? 'Current YouTube link loaded. Save to update the website.'
-        : 'YouTube link is set on the website. Enter API key to edit.';
-    } else {
-      renderYoutubePreview('', '');
-      status.className = 'loading';
-      status.textContent = apiKey
-        ? 'No YouTube link yet. Paste a URL and click Save.'
-        : 'Enter ADMIN_API_KEY to add a YouTube link.';
-    }
-  } catch (error) {
-    status.className = 'error';
-    status.textContent = error.message;
-  }
-}
-
-async function saveYoutubeSetting() {
-  const apiKey = document.getElementById('apiKey').value.trim();
-  const status = document.getElementById('youtubeStatus');
-  const url = document.getElementById('youtubeUrl').value.trim();
-
-  if (!apiKey) {
-    status.className = 'error';
-    status.textContent = 'Enter ADMIN_API_KEY first.';
-    return;
-  }
-
-  status.className = 'loading';
-  status.textContent = 'Saving YouTube link...';
-
-  try {
-    const response = await fetch(`${API_BASE}/settings/youtube`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-api-key': apiKey,
-      },
-      body: JSON.stringify({ url }),
-    });
-    const payload = await response.json();
-
-    if (!response.ok) {
-      throw new Error(payload?.error?.message || 'Failed to save YouTube link');
-    }
-
-    localStorage.setItem(ADMIN_KEY_STORAGE, apiKey);
-    renderYoutubePreview(payload.data.url, payload.data.videoId);
-    status.className = 'loading';
-    status.textContent = url
-      ? 'Saved! Website video updated.'
-      : 'YouTube link removed from website.';
-  } catch (error) {
-    status.className = 'error';
-    status.textContent = error.message;
-  }
-}
-
-document.getElementById('saveYoutubeBtn').addEventListener('click', () => saveYoutubeSetting());
-document.getElementById('youtubeUrl').addEventListener('keydown', (event) => {
-  if (event.key === 'Enter') saveYoutubeSetting();
-});
 document.getElementById('loadBtn').addEventListener('click', () => loadDashboard());
 document.getElementById('exportBtn').addEventListener('click', async () => {
   const apiKey = document.getElementById('apiKey').value.trim();
@@ -380,6 +347,9 @@ document.getElementById('apiKey').addEventListener('keydown', (event) => {
   if (event.key === 'Enter') loadDashboard();
 });
 
+</script>
+<script src="../js/admin-content.js"></script>
+<script>
 initAdminDashboard();
 </script>
 </body>

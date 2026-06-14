@@ -8,6 +8,11 @@ import {
 } from '../config/env.js';
 import { logger } from '../utils/logger.js';
 import { AppError } from '../utils/errors.js';
+import {
+  buildPublicSiteContent,
+  normalizeTemplates,
+  normalizeReviews,
+} from '../constants/siteContent.js';
 
 const CONFIG_BLOB_NAME = 'thtwaat-site-config.json';
 const LOCAL_CONFIG_PATH = './data/site-config.json';
@@ -110,13 +115,32 @@ export async function getYoutubeSettings() {
   return {
     url: config.youtubeUrl || '',
     videoId: config.youtubeVideoId || '',
+    title: config.youtubeTitle || 'Company Services Demo',
+    subtitle: config.youtubeSubtitle || '',
     updatedAt: config.updatedAt || null,
   };
 }
 
-export async function saveYoutubeSettings(url, videoId) {
+export async function saveYoutubeSettings(url, videoId, title, subtitle) {
   return saveSiteConfig({
     youtubeUrl: url,
     youtubeVideoId: videoId,
+    youtubeTitle: title || 'Company Services Demo',
+    youtubeSubtitle: subtitle || '',
   });
+}
+
+export async function getPublicSiteContent() {
+  const config = await getSiteConfig();
+  return buildPublicSiteContent(config);
+}
+
+export async function saveTemplates(templates) {
+  const normalized = normalizeTemplates(templates);
+  return saveSiteConfig({ templates: normalized });
+}
+
+export async function saveReviews(reviews) {
+  const normalized = normalizeReviews(reviews);
+  return saveSiteConfig({ reviews: normalized });
 }
