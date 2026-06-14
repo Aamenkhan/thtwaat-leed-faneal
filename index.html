@@ -567,6 +567,7 @@ footer{padding:2.5rem 5%;border-top:1px solid var(--border);position:relative;z-
   </div>
 </div>
 
+<script src="js/leads-api.js"></script>
 <script>
 // ═══════════════════════════════════
 //  STATE
@@ -578,6 +579,36 @@ let ytVideoId = ''; // set by user in admin input
 
 const DB_KEY = 'tt_accounts';
 const USR_KEY = 'tt_user';
+const LEAD_SYNC_KEY = 'tt_leads_synced';
+
+async function syncLeadToAdmin(user, message) {
+  if (!window.ThtwaatLeads || !user?.email) {
+    console.warn('[THTWAAT Lead] API client not loaded — lead not sent');
+    return false;
+  }
+
+  const synced = JSON.parse(localStorage.getItem(LEAD_SYNC_KEY) || '[]');
+  if (synced.includes(user.email)) {
+    return true;
+  }
+
+  try {
+    await ThtwaatLeads.submitWebsiteLead({
+      name: user.name,
+      email: user.email,
+      phone: user.phone || '',
+      message,
+      source: 'Website',
+    });
+    synced.push(user.email);
+    localStorage.setItem(LEAD_SYNC_KEY, JSON.stringify(synced));
+    console.info('[THTWAAT Lead] Lead synced to admin', user.email);
+    return true;
+  } catch (err) {
+    console.error('[THTWAAT Lead] Lead sync failed', err.message);
+    return false;
+  }
+}
 
 // ═══════════════════════════════════
 //  AUTH GATE
@@ -597,7 +628,7 @@ function showErr(msg){
 }
 function hideErr(){document.getElementById('authErr').style.display='none';}
 
-function doLogin(){
+async function doLogin(){
   hideErr();
   const email=document.getElementById('aLEmail').value.trim();
   const pass=document.getElementById('aLPass').value;
@@ -605,7 +636,9 @@ function doLogin(){
   const db=JSON.parse(localStorage.getItem(DB_KEY)||'{}');
   if(!db[email]){showErr('No account found. Please sign up first.');authSwitch('signup');return;}
   if(db[email].pass!==pass){showErr('Incorrect password. Please try again.');return;}
-  enterSite({name:db[email].name,email,phone:db[email].phone});
+  const user={name:db[email].name,email,phone:db[email].phone};
+  await syncLeadToAdmin(user,'User login on THTWAAT website.');
+  enterSite(user);
 }
 
 async function doSignup(){
@@ -622,19 +655,7 @@ async function doSignup(){
   db[email]={name,phone,pass};
   localStorage.setItem(DB_KEY,JSON.stringify(db));
 
-  if(window.ThtwaatLeads){
-    try{
-      await ThtwaatLeads.submitWebsiteLead({
-        name,email,phone,
-        message:'New account signup on THTWAAT website.',
-        source:'Website'
-      });
-      console.info('[THTWAAT Lead] Signup lead saved to admin');
-    }catch(err){
-      console.error('[THTWAAT Lead] Signup lead save failed', err.message);
-    }
-  }
-
+  await syncLeadToAdmin({name,email,phone},'New account signup on THTWAAT website.');
   enterSite({name,email,phone});
 }
 
@@ -661,9 +682,17 @@ function doLogout(){
 }
 
 // Auto-login if session exists
-(function(){
+(async function(){
   const saved=localStorage.getItem(USR_KEY);
-  if(saved){try{enterSite(JSON.parse(saved));}catch(e){localStorage.removeItem(USR_KEY);}}
+  if(saved){
+    try{
+      const user=JSON.parse(saved);
+      await syncLeadToAdmin(user,'Returning user session on THTWAAT website.');
+      enterSite(user);
+    }catch(e){
+      localStorage.removeItem(USR_KEY);
+    }
+  }
 })();
 
 // ═══════════════════════════════════
@@ -776,6 +805,5 @@ function initReveal(){
   els.forEach(el=>obs.observe(el));
 }
 </script>
-<script src="js/leads-api.js"></script>
 </body>
 </html>
