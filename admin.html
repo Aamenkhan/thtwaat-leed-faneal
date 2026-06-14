@@ -48,6 +48,15 @@ th{color:var(--muted);font-size:.75rem;text-transform:uppercase;letter-spacing:.
 .loading{color:var(--muted)}
 .empty{color:var(--muted);text-align:center;padding:2rem}
 .back{color:var(--gold);text-decoration:none;font-size:.9rem}
+.form-row{display:flex;gap:.75rem;flex-wrap:wrap;align-items:center}
+.form-row input{flex:1;min-width:260px;background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:.75rem 1rem;color:var(--text);font-family:var(--mono);font-size:.82rem}
+.form-row .btn-secondary{background:var(--purple);color:#fff}
+.youtube-preview{margin-top:1rem;font-size:.85rem;color:var(--muted)}
+.youtube-preview a{color:var(--teal)}
+.youtube-panel{border-color:rgba(240,180,41,.35);background:linear-gradient(135deg,rgba(240,180,41,.06),var(--bg2))}
+.youtube-actions{display:flex;gap:.75rem;flex-wrap:wrap;margin-top:1rem}
+.youtube-actions .btn-outline{display:inline-block;padding:.75rem 1.1rem;border-radius:8px;font-weight:700;text-decoration:none;background:transparent;border:1px solid var(--border2);color:var(--text)}
+.youtube-actions .btn-outline:hover{border-color:var(--gold);color:var(--gold)}
 </style>
 </head>
 <body>
@@ -63,6 +72,20 @@ th{color:var(--muted);font-size:.75rem;text-transform:uppercase;letter-spacing:.
       <button class="btn" id="loadBtn">Load Data</button>
       <button class="btn" id="exportBtn" style="background:#06D6A0">Download Excel</button>
     </div>
+  </div>
+
+  <div class="panel youtube-panel" id="youtubePanel" style="margin-bottom:1.5rem">
+    <h2>📺 YouTube Link — Website par Video</h2>
+    <p class="sub" style="margin-bottom:1rem">Yahan YouTube URL paste karein aur <strong>Save to Website</strong> dabayein. Website par red <strong>Watch Company Video</strong> button dikhega.</p>
+    <div class="form-row">
+      <input type="url" id="youtubeUrl" placeholder="https://www.youtube.com/watch?v=... ya youtu.be/..."/>
+      <button class="btn btn-secondary" id="saveYoutubeBtn">Save to Website</button>
+    </div>
+    <div class="youtube-actions">
+      <a class="btn-outline" href="/#how" target="_blank" rel="noopener">Website par dekhein →</a>
+    </div>
+    <div id="youtubeStatus" class="loading" style="margin-top:1rem">YouTube link yahan se manage hoti hai.</div>
+    <div id="youtubePreview" class="youtube-preview" hidden></div>
   </div>
 
   <a class="back" href="/">← Back to website</a>
@@ -176,6 +199,7 @@ async function loadDashboard(silent = false) {
 
     localStorage.setItem(ADMIN_KEY_STORAGE, apiKey);
     startAutoRefresh();
+    loadYoutubeSetting();
 
     const data = payload.data;
     document.getElementById('stats').hidden = false;
@@ -220,6 +244,7 @@ function startAutoRefresh() {
 }
 
 function initAdminDashboard() {
+  loadYoutubeSetting();
   const savedKey = localStorage.getItem(ADMIN_KEY_STORAGE);
   if (savedKey) {
     document.getElementById('apiKey').value = savedKey;
@@ -229,6 +254,97 @@ function initAdminDashboard() {
   document.getElementById('status').textContent = 'Enter ADMIN_API_KEY once — leads load automatically.';
 }
 
+function renderYoutubePreview(url, videoId) {
+  const preview = document.getElementById('youtubePreview');
+  if (!url && !videoId) {
+    preview.hidden = true;
+    preview.innerHTML = '';
+    return;
+  }
+  preview.hidden = false;
+  const watchUrl = url || ('https://www.youtube.com/watch?v=' + videoId);
+  preview.innerHTML = 'Live on website: <a href="' + watchUrl + '" target="_blank" rel="noopener">' + watchUrl + '</a>';
+}
+
+async function loadYoutubeSetting() {
+  const status = document.getElementById('youtubeStatus');
+  const apiKey = document.getElementById('apiKey').value.trim();
+
+  try {
+    const response = await fetch(`${API_BASE}/settings/youtube`);
+    const payload = await response.json();
+    if (!response.ok) {
+      throw new Error(payload?.error?.message || 'Failed to load YouTube settings');
+    }
+
+    const url = payload?.data?.url || '';
+    const videoId = payload?.data?.videoId || '';
+    document.getElementById('youtubeUrl').value = url;
+
+    if (url || videoId) {
+      renderYoutubePreview(url, videoId);
+      status.className = 'loading';
+      status.textContent = apiKey
+        ? 'Current YouTube link loaded. Save to update the website.'
+        : 'YouTube link is set on the website. Enter API key to edit.';
+    } else {
+      renderYoutubePreview('', '');
+      status.className = 'loading';
+      status.textContent = apiKey
+        ? 'No YouTube link yet. Paste a URL and click Save.'
+        : 'Enter ADMIN_API_KEY to add a YouTube link.';
+    }
+  } catch (error) {
+    status.className = 'error';
+    status.textContent = error.message;
+  }
+}
+
+async function saveYoutubeSetting() {
+  const apiKey = document.getElementById('apiKey').value.trim();
+  const status = document.getElementById('youtubeStatus');
+  const url = document.getElementById('youtubeUrl').value.trim();
+
+  if (!apiKey) {
+    status.className = 'error';
+    status.textContent = 'Enter ADMIN_API_KEY first.';
+    return;
+  }
+
+  status.className = 'loading';
+  status.textContent = 'Saving YouTube link...';
+
+  try {
+    const response = await fetch(`${API_BASE}/settings/youtube`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': apiKey,
+      },
+      body: JSON.stringify({ url }),
+    });
+    const payload = await response.json();
+
+    if (!response.ok) {
+      throw new Error(payload?.error?.message || 'Failed to save YouTube link');
+    }
+
+    localStorage.setItem(ADMIN_KEY_STORAGE, apiKey);
+    renderYoutubePreview(payload.data.url, payload.data.videoId);
+    status.className = 'loading';
+    status.textContent = url
+      ? 'Saved! Website video updated.'
+      : 'YouTube link removed from website.';
+  } catch (error) {
+    status.className = 'error';
+    status.textContent = error.message;
+  }
+}
+
+document.getElementById('saveYoutubeBtn').addEventListener('click', () => saveYoutubeSetting());
+document.getElementById('youtubeUrl').addEventListener('keydown', (event) => {
+  if (event.key === 'Enter') saveYoutubeSetting();
+});
 document.getElementById('loadBtn').addEventListener('click', () => loadDashboard());
 document.getElementById('exportBtn').addEventListener('click', async () => {
   const apiKey = document.getElementById('apiKey').value.trim();

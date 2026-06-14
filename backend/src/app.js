@@ -6,6 +6,7 @@ import { env } from './config/env.js';
 import healthRoutes from './routes/health.js';
 import leadRoutes from './routes/leads.js';
 import webhookRoutes from './routes/webhook.js';
+import settingsRoutes from './routes/settings.js';
 import { errorHandler, notFoundHandler } from './middleware/errorHandler.js';
 
 const app = express();
@@ -18,7 +19,7 @@ app.use(helmet({
 
 app.use(cors({
   origin: env.corsOrigin === '*' ? true : env.corsOrigin.split(',').map((item) => item.trim()),
-  methods: ['GET', 'POST', 'OPTIONS'],
+  methods: ['GET', 'POST', 'PUT', 'OPTIONS'],
 }));
 
 app.use(express.json({ limit: '1mb' }));
@@ -46,6 +47,8 @@ app.get('/', (_req, res) => {
       createLead: 'POST /lead/create',
       listLeads: 'GET /leads',
       exportExcel: 'GET /leads/export',
+      youtubeSettings: 'GET /settings/youtube',
+      saveYoutube: 'PUT /settings/youtube',
       whatsappWebhook: 'GET|POST /webhook/whatsapp',
     },
   });
@@ -55,6 +58,7 @@ app.use('/health', healthRoutes);
 app.use('/lead', leadRoutes);
 app.use('/leads', leadRoutes);
 app.use('/webhook/whatsapp', webhookRoutes);
+app.use('/settings', settingsRoutes);
 
 app.use(notFoundHandler);
 app.use(errorHandler);

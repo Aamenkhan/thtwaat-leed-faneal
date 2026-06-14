@@ -11,13 +11,31 @@ const router = Router();
 router.post('/create', validateLeadPayload, async (req, res, next) => {
   try {
     assertRuntimeConfig();
+    logger.info('Lead create request received', {
+      source: req.validatedLead.source,
+      phone: req.validatedLead.phone,
+      email: req.validatedLead.email,
+    });
+
     const lead = await createLead(req.validatedLead);
+
+    logger.info('Lead create request completed', {
+      phone: lead.phone,
+      source: lead.source,
+      leadScore: lead.leadScore,
+      category: lead.category,
+    });
 
     res.status(201).json({
       success: true,
       data: lead,
     });
   } catch (error) {
+    logger.error('Lead create request failed', {
+      message: error.message,
+      code: error.code,
+      stack: error.stack,
+    });
     next(error);
   }
 });

@@ -15,6 +15,7 @@
     { "source": "/lead/create", "destination": "/api" },
     { "source": "/leads", "destination": "/api" },
     { "source": "/leads/export", "destination": "/api" },
+    { "source": "/settings/youtube", "destination": "/api" },
     { "source": "/webhook/whatsapp", "destination": "/api" }
   ],
   "cleanUrls": true,

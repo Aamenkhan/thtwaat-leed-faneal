@@ -4,6 +4,7 @@
 node_modules/
 backend/node_modules/
 data/*.xlsx
+data/site-config.json
 !data/.gitkeep
 npm-debug.log*
 .DS_Store

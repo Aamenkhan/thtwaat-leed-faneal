@@ -94,6 +94,9 @@ nav{position:fixed;top:0;left:0;right:0;z-index:500;height:60px;display:flex;ali
 .btn-o:hover{border-color:rgba(255,255,255,.3);background:rgba(255,255,255,.04)}
 .btn-wa{background:#25D366;color:#fff;border:none;border-radius:9px;padding:.85rem 1.75rem;font-family:var(--font);font-weight:700;font-size:1rem;display:inline-flex;align-items:center;gap:8px;transition:opacity .2s,transform .15s}
 .btn-wa:hover{opacity:.88;transform:translateY(-2px)}
+.btn-video{background:linear-gradient(135deg,#ff0033,#cc0000);color:#fff;border:none;border-radius:9px;padding:.85rem 1.75rem;font-family:var(--font);font-weight:700;font-size:1rem;display:inline-flex;align-items:center;gap:8px;transition:opacity .2s,transform .15s;cursor:pointer;box-shadow:0 8px 24px rgba(255,0,51,.25)}
+.btn-video:hover{opacity:.92;transform:translateY(-2px)}
+.btn-video svg{width:18px;height:18px;fill:currentColor;flex-shrink:0}
 .hero-stats{display:flex;gap:2.5rem;justify-content:center;padding-top:2.5rem;border-top:1px solid var(--border);flex-wrap:wrap}
 .stat-item{text-align:center}
 .stat-n{font-family:var(--mono);font-size:1.9rem;font-weight:700;color:var(--text)}
@@ -118,6 +121,7 @@ section{position:relative;z-index:1;padding:6rem 5%}
 .yt-play-btn svg{width:28px;height:28px;fill:#000;margin-left:4px}
 .yt-label{font-weight:600;font-size:1rem;color:var(--text)}
 .yt-sublabel{font-size:.8rem;color:var(--muted)}
+.video-play-btn{margin-top:1.25rem}
 .video-id-input{display:none}
 .video-points{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem;margin-top:2.5rem}
 .vp{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:1.25rem;display:flex;align-items:flex-start;gap:.75rem}
@@ -299,7 +303,11 @@ footer{padding:2.5rem 5%;border-top:1px solid var(--border);position:relative;z-
     <p class="hero-desc rev">Custom mobile apps, web platforms, AI automation & performance digital marketing — built for Indian businesses ready to scale.</p>
     <div class="hero-ctas rev">
       <button class="btn-g" onclick="openPay()">🚀 Book a Project</button>
-      <a href="#how" class="btn-o">Watch How We Work</a>
+      <button type="button" class="btn-video" id="heroWatchBtn" hidden onclick="scrollToVideoAndPlay()">
+        <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+        Watch Company Video
+      </button>
+      <a href="#how" class="btn-o" id="heroHowLink">How It Works</a>
       <a href="https://wa.me/917869XXXXXX?text=Hi+Thtwaat,+I+want+a+free+MVP+consultation" target="_blank" class="btn-wa">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
         Free MVP Chat
@@ -319,14 +327,18 @@ footer{padding:2.5rem 5%;border-top:1px solid var(--border);position:relative;z-
   <div class="sec-tag">How It Works</div>
   <h2 class="sec-h">See Thtwaat in Action</h2>
   <p class="sec-sub">Watch how we take your idea from concept to live product — end to end, no middlemen.</p>
-  <div class="video-wrap rev">
+  <div class="video-wrap rev" id="videoWrap" hidden>
     <div class="yt-frame" id="ytFrame">
       <div class="yt-placeholder" id="ytPlaceholder" onclick="loadYT()">
         <div class="yt-play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
         <div class="yt-label">How Thtwaat Works — Company Overview</div>
-        <div class="yt-sublabel">Click to play</div>
+        <div class="yt-sublabel">Click to play video</div>
       </div>
     </div>
+    <button type="button" class="btn-video video-play-btn" id="videoPlayBtn" onclick="loadYT()">
+      <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+      Play Video on Website
+    </button>
   </div>
   <div class="video-points rev">
     <div class="vp"><div class="vp-icon">💬</div><div><div class="vp-t">Discovery Call</div><div class="vp-d">We understand your goals and tech needs.</div></div></div>
@@ -571,10 +583,7 @@ let CU = null; // current user
 let selAmt = 2999900;
 let selName = 'Mobile App — Flutter';
 let ytVideoId = '';
-
-// Paste your YouTube link OR video ID here (example below)
-const YOUTUBE_VIDEO_URL = '';
-// const YOUTUBE_VIDEO_URL = 'https://www.youtube.com/watch?v=YOUR_VIDEO_ID';
+const API_BASE = window.THTWAAT_API_BASE || '';
 
 const DB_KEY = 'tt_accounts';
 const USR_KEY = 'tt_user';
@@ -771,25 +780,70 @@ function embedYoutube(autoplay) {
 }
 
 function initYoutube() {
-  ytVideoId = parseYoutubeId(YOUTUBE_VIDEO_URL);
-  if (!ytVideoId) return;
+  setYoutubeUiVisible(false);
+  const placeholder = document.getElementById('ytPlaceholder');
+  if (placeholder) {
+    placeholder.classList.remove('has-thumb');
+    placeholder.style.backgroundImage = '';
+  }
+}
+
+function setYoutubeUiVisible(visible) {
+  const wrap = document.getElementById('videoWrap');
+  const heroBtn = document.getElementById('heroWatchBtn');
+  if (wrap) wrap.hidden = !visible;
+  if (heroBtn) heroBtn.hidden = !visible;
+}
+
+function applyYoutubeVideo(url, videoId) {
+  ytVideoId = videoId || parseYoutubeId(url);
+  if (!ytVideoId) {
+    setYoutubeUiVisible(false);
+    return;
+  }
 
   const placeholder = document.getElementById('ytPlaceholder');
   if (placeholder) {
     placeholder.classList.add('has-thumb');
     placeholder.style.backgroundImage = 'url(https://img.youtube.com/vi/' + ytVideoId + '/hqdefault.jpg)';
   }
+  setYoutubeUiVisible(true);
+}
+
+function scrollToVideoAndPlay() {
+  if (!ytVideoId) {
+    alert('YouTube video abhi set nahi hai.\n\nAdmin panel se link add karein: /admin');
+    return;
+  }
+  const section = document.getElementById('how');
+  if (section) section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  setTimeout(loadYT, 450);
+}
+
+async function loadYoutubeFromApi() {
+  try {
+    const response = await fetch(`${API_BASE}/settings/youtube`);
+    const payload = await response.json();
+    if (!response.ok) return;
+
+    const url = payload?.data?.url || '';
+    const videoId = payload?.data?.videoId || '';
+    applyYoutubeVideo(url, videoId);
+  } catch {
+    // Ignore — video section stays hidden until admin sets a link
+  }
 }
 
 function loadYT() {
   if (!ytVideoId) {
-    alert('YouTube link abhi set nahi hai.\n\nindex.html mein YOUTUBE_VIDEO_URL update karein.');
+    alert('YouTube video abhi set nahi hai.\n\nAdmin panel se link add karein: /admin');
     return;
   }
   embedYoutube(true);
 }
 
 initYoutube();
+loadYoutubeFromApi();
 
 // ═══════════════════════════════════
 //  PAYMENT MODAL

@@ -58,6 +58,13 @@ export async function saveLead(lead) {
   assertStorageConfigured();
   const provider = env.storageProvider;
 
+  logger.info('saveLead invoked', {
+    provider,
+    phone: lead.phone,
+    source: lead.source,
+    excelPath: excelService.getExcelStorageInfo().path,
+  });
+
   if (provider === 'google') {
     return appendLeadToSheet(lead);
   }
@@ -73,6 +80,9 @@ export async function saveLead(lead) {
 
   const failures = results.filter((result) => result.status === 'rejected');
   if (failures.length === results.length) {
+    logger.error('All storage backends failed', {
+      errors: failures.map((item) => item.reason?.message),
+    });
     throw failures[0].reason;
   }
 

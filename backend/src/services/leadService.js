@@ -30,7 +30,26 @@ export async function createLead(input) {
     aiSummary: formatAiSummary(analysis.category, analysis.summary),
   };
 
-  await saveLead(lead);
+  logger.info('Saving lead to storage', {
+    phone: lead.phone,
+    source: lead.source,
+    category: lead.category,
+    leadScore: lead.leadScore,
+  });
+
+  try {
+    await saveLead(lead);
+    logger.info('Lead persisted successfully', { phone: lead.phone, source: lead.source });
+  } catch (error) {
+    logger.error('Lead persistence failed', {
+      phone: lead.phone,
+      source: lead.source,
+      message: error.message,
+      code: error.code,
+      stack: error.stack,
+    });
+    throw error;
+  }
 
   return lead;
 }
