@@ -93,6 +93,18 @@
 
       renderTemplateList();
       renderReviewList();
+
+      const liveNote = [];
+      if (data.usingDefaultYoutube) liveNote.push('demo video');
+      if (data.usingDefaultTemplates) liveNote.push('demo templates');
+      if (data.usingDefaultReviews) liveNote.push('demo reviews');
+      if (liveNote.length) {
+        setStatus(
+          $('contentStatus'),
+          'loading',
+          `Website shows ${liveNote.join(', ')}. Click "Load & Save Sample Content" to publish samples permanently, or edit below.`,
+        );
+      }
     } catch (error) {
       setStatus($('contentStatus'), 'error', error.message);
     }
@@ -103,7 +115,7 @@
     const status = $('youtubeStatus');
     if (!apiKey) {
       setStatus(status, 'error', 'Enter ADMIN_API_KEY first.');
-      return;
+      return false;
     }
 
     setStatus(status, 'loading', 'Saving YouTube video...');
@@ -121,8 +133,10 @@
       if (!response.ok) throw new Error(payload?.error?.message || 'Failed to save YouTube');
       localStorage.setItem('tt_admin_api_key', apiKey);
       setStatus(status, 'loading', 'YouTube demo video saved to website.');
+      return true;
     } catch (error) {
       setStatus(status, 'error', error.message);
+      return false;
     }
   }
 
@@ -130,7 +144,7 @@
     const apiKey = getApiKey();
     if (!apiKey) {
       setStatus($('contentStatus'), 'error', 'Enter ADMIN_API_KEY first.');
-      return;
+      return false;
     }
 
     setStatus($('contentStatus'), 'loading', 'Saving templates...');
@@ -145,8 +159,10 @@
       templatesDraft = payload.data.templates || [];
       renderTemplateList();
       setStatus($('contentStatus'), 'loading', 'Client templates saved to website.');
+      return true;
     } catch (error) {
       setStatus($('contentStatus'), 'error', error.message);
+      return false;
     }
   }
 
@@ -154,7 +170,7 @@
     const apiKey = getApiKey();
     if (!apiKey) {
       setStatus($('contentStatus'), 'error', 'Enter ADMIN_API_KEY first.');
-      return;
+      return false;
     }
 
     setStatus($('contentStatus'), 'loading', 'Saving reviews...');
@@ -169,8 +185,10 @@
       reviewsDraft = payload.data.reviews || [];
       renderReviewList();
       setStatus($('contentStatus'), 'loading', 'Client reviews saved to website.');
+      return true;
     } catch (error) {
       setStatus($('contentStatus'), 'error', error.message);
+      return false;
     }
   }
 
@@ -219,12 +237,66 @@
     renderReviewList();
   }
 
+  function applySampleDrafts() {
+    const sample = window.THTWAAT_SAMPLE_CONTENT;
+    if (!sample) return false;
+
+    $('youtubeUrl').value = sample.youtube.url;
+    $('youtubeTitle').value = sample.youtube.title;
+    $('youtubeSubtitle').value = sample.youtube.subtitle;
+    templatesDraft = sample.templates.map((item) => ({ ...item }));
+    reviewsDraft = sample.reviews.map((item) => ({ ...item }));
+    renderTemplateList();
+    renderReviewList();
+    return true;
+  }
+
+  async function loadAndSaveSampleContent() {
+    const apiKey = getApiKey();
+    if (!apiKey) {
+      setStatus($('contentStatus'), 'error', 'Enter ADMIN_API_KEY first.');
+      return;
+    }
+    if (!applySampleDrafts()) {
+      setStatus($('contentStatus'), 'error', 'Sample content file not loaded.');
+      return;
+    }
+
+    setStatus($('contentStatus'), 'loading', 'Saving sample video, templates, and reviews...');
+    const videoOk = await saveYoutube();
+    const templatesOk = await saveTemplates();
+    const reviewsOk = await saveReviews();
+
+    if (videoOk && templatesOk && reviewsOk) {
+      setStatus(
+        $('contentStatus'),
+        'loading',
+        'Sample content saved! Website now has demo video, 6 templates, and 5 professional reviews.',
+      );
+      return;
+    }
+
+    setStatus($('contentStatus'), 'error', 'Some sample content failed to save. Check messages above and retry.');
+  }
+
   function init() {
     $('saveYoutubeBtn').addEventListener('click', saveYoutube);
     $('addTemplateBtn').addEventListener('click', addTemplate);
     $('saveTemplatesBtn').addEventListener('click', saveTemplates);
     $('addReviewBtn').addEventListener('click', addReview);
     $('saveReviewsBtn').addEventListener('click', saveReviews);
+    const loadSampleBtn = $('loadSampleBtn');
+    if (loadSampleBtn) {
+      loadSampleBtn.addEventListener('click', loadAndSaveSampleContent);
+    }
+    const previewSampleBtn = $('previewSampleBtn');
+    if (previewSampleBtn) {
+      previewSampleBtn.addEventListener('click', () => {
+        if (applySampleDrafts()) {
+          setStatus($('contentStatus'), 'loading', 'Sample content loaded in forms. Click Save buttons or "Load & Save Sample Content".');
+        }
+      });
+    }
     loadAllContent();
   }
 

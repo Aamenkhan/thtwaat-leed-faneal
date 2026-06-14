@@ -112,12 +112,14 @@ export async function saveSiteConfig(partial) {
 
 export async function getYoutubeSettings() {
   const config = await getSiteConfig();
+  const youtube = buildPublicSiteContent(config).youtube;
   return {
-    url: config.youtubeUrl || '',
-    videoId: config.youtubeVideoId || '',
-    title: config.youtubeTitle || 'Company Services Demo',
-    subtitle: config.youtubeSubtitle || '',
+    url: youtube.url,
+    videoId: youtube.videoId,
+    title: youtube.title,
+    subtitle: youtube.subtitle,
     updatedAt: config.updatedAt || null,
+    usingDefault: !String(config.youtubeVideoId || config.youtubeUrl || '').trim(),
   };
 }
 

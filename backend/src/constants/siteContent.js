@@ -1,10 +1,17 @@
+export const DEFAULT_YOUTUBE = Object.freeze({
+  url: 'https://www.youtube.com/watch?v=CBYhVcO4WgI',
+  videoId: 'CBYhVcO4WgI',
+  title: 'Thtwaat Company Services Demo',
+  subtitle: 'Apps, websites, SaaS, AI automation & growth marketing — see how we ship products for US startups.',
+});
+
 export const DEFAULT_TEMPLATES = Object.freeze([
   {
     id: 'demo-website',
     title: 'Business Website Template',
     category: 'Website',
-    description: 'Clean, conversion-focused website layout for service businesses and startups.',
-    imageUrl: '',
+    description: 'Conversion-focused layout with hero, services, pricing, and lead capture — ready to customize for your brand.',
+    imageUrl: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&q=80',
     previewUrl: '/checkout?plan=website-start',
     badge: 'Starter',
   },
@@ -12,8 +19,8 @@ export const DEFAULT_TEMPLATES = Object.freeze([
     id: 'demo-app',
     title: 'Mobile App UI Template',
     category: 'Mobile App',
-    description: 'Flutter-ready app screens with onboarding, dashboard, and payments flow.',
-    imageUrl: '',
+    description: 'Flutter-ready screens with onboarding, dashboard, cart, and payments — ideal for marketplace or service apps.',
+    imageUrl: 'https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=800&q=80',
     previewUrl: '/checkout?plan=app-start',
     badge: 'Popular',
   },
@@ -21,8 +28,8 @@ export const DEFAULT_TEMPLATES = Object.freeze([
     id: 'demo-saas',
     title: 'SaaS Dashboard Template',
     category: 'SaaS',
-    description: 'Admin panel, analytics, billing hooks, and multi-tenant architecture starter.',
-    imageUrl: '',
+    description: 'Admin panel with analytics, user management, billing hooks, and multi-tenant architecture starter.',
+    imageUrl: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&q=80',
     previewUrl: '/checkout?plan=saas-build',
     badge: 'Pro',
   },
@@ -30,10 +37,28 @@ export const DEFAULT_TEMPLATES = Object.freeze([
     id: 'demo-ai',
     title: 'AI Automation Template',
     category: 'AI',
-    description: 'Workflow automation dashboard with chatbot integration and lead capture.',
-    imageUrl: '',
+    description: 'Workflow automation dashboard with chatbot, lead routing, and CRM integrations built in.',
+    imageUrl: 'https://images.unsplash.com/photo-1677442136019-21780ecad995?w=800&q=80',
     previewUrl: '/checkout?plan=ai-automation',
     badge: 'AI',
+  },
+  {
+    id: 'demo-ecom',
+    title: 'E-Commerce Store Template',
+    category: 'E-Commerce',
+    description: 'Product catalog, cart, checkout, and order tracking — optimized for D2C and marketplace sellers.',
+    imageUrl: 'https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=800&q=80',
+    previewUrl: '/checkout?plan=web-app',
+    badge: 'Hot',
+  },
+  {
+    id: 'demo-landing',
+    title: 'High-Converting Landing Page',
+    category: 'Marketing',
+    description: 'Single-offer funnel with social proof, FAQ, and checkout CTA — built for paid ads and lead gen.',
+    imageUrl: 'https://images.unsplash.com/photo-1551434678-e076c223a692?w=800&q=80',
+    previewUrl: '/checkout?plan=landing-page-marketing',
+    badge: 'Growth',
   },
 ]);
 
@@ -45,7 +70,7 @@ export const DEFAULT_REVIEWS = Object.freeze([
     company: 'ScaleUp Labs · Austin, TX',
     rating: 5,
     text: 'Thtwaat shipped our SaaS MVP in under 3 weeks. Clear communication, fixed pricing, and zero surprises. Highly recommend for US startups.',
-    avatarUrl: '',
+    avatarUrl: 'https://ui-avatars.com/api/?name=Michael+R&background=2563eb&color=fff&size=128&bold=true',
   },
   {
     id: 'demo-review-2',
@@ -53,8 +78,8 @@ export const DEFAULT_REVIEWS = Object.freeze([
     role: 'Product Manager',
     company: 'Nova Retail · San Francisco',
     rating: 5,
-    text: 'Professional team from discovery to launch. Our AI automation saved 20+ hours per week. The checkout and onboarding flow was seamless.',
-    avatarUrl: '',
+    text: 'Professional team from discovery to launch. Our AI automation saved 20+ hours per week. Checkout and onboarding were seamless.',
+    avatarUrl: 'https://ui-avatars.com/api/?name=Priya+S&background=10b981&color=fff&size=128&bold=true',
   },
   {
     id: 'demo-review-3',
@@ -62,10 +87,35 @@ export const DEFAULT_REVIEWS = Object.freeze([
     role: 'Founder',
     company: 'BuildRight Co · New York',
     rating: 5,
-    text: 'Best dev partner we have worked with. Templates were polished, reviews from their clients checked out, and delivery was on time.',
-    avatarUrl: '',
+    text: 'Best dev partner we have worked with. Templates were polished, delivery was on time, and the final product exceeded expectations.',
+    avatarUrl: 'https://ui-avatars.com/api/?name=James+T&background=6366f1&color=fff&size=128&bold=true',
+  },
+  {
+    id: 'demo-review-4',
+    name: 'Sarah L.',
+    role: 'Marketing Director',
+    company: 'BrightPath Agency · Chicago',
+    rating: 5,
+    text: 'Our landing page conversion jumped 40% after launch. The team understood US market expectations and moved fast without cutting corners.',
+    avatarUrl: 'https://ui-avatars.com/api/?name=Sarah+L&background=f59e0b&color=fff&size=128&bold=true',
+  },
+  {
+    id: 'demo-review-5',
+    name: 'David K.',
+    role: 'CTO',
+    company: 'FinEdge · Miami',
+    rating: 5,
+    text: 'From Flutter app to admin dashboard — everything was production-ready. Secure payments, clean code, and reliable post-launch support.',
+    avatarUrl: 'https://ui-avatars.com/api/?name=David+K&background=ef4444&color=fff&size=128&bold=true',
   },
 ]);
+
+/** Full sample bundle for admin one-click load */
+export const SAMPLE_SITE_CONTENT = Object.freeze({
+  youtube: { ...DEFAULT_YOUTUBE },
+  templates: DEFAULT_TEMPLATES.map((item) => ({ ...item })),
+  reviews: DEFAULT_REVIEWS.map((item) => ({ ...item })),
+});
 
 export function normalizeTemplate(item, index = 0) {
   if (!item || typeof item !== 'object') return null;
@@ -124,18 +174,32 @@ export function getDisplayReviews(configReviews) {
   return saved.length ? saved : [...DEFAULT_REVIEWS];
 }
 
+export function getDisplayYoutube(config = {}) {
+  const videoId = String(config.youtubeVideoId || '').trim();
+  const url = String(config.youtubeUrl || '').trim();
+
+  if (videoId || url) {
+    return {
+      url,
+      videoId,
+      title: config.youtubeTitle || DEFAULT_YOUTUBE.title,
+      subtitle: config.youtubeSubtitle || DEFAULT_YOUTUBE.subtitle,
+    };
+  }
+
+  return { ...DEFAULT_YOUTUBE };
+}
+
 export function buildPublicSiteContent(config = {}) {
+  const youtube = getDisplayYoutube(config);
+
   return {
-    youtube: {
-      url: config.youtubeUrl || '',
-      videoId: config.youtubeVideoId || '',
-      title: config.youtubeTitle || 'Company Services Demo',
-      subtitle: config.youtubeSubtitle || 'Watch how we build apps, websites, AI systems, and full product ecosystems.',
-    },
+    youtube,
     templates: getDisplayTemplates(config.templates),
     reviews: getDisplayReviews(config.reviews),
     usingDefaultTemplates: !normalizeTemplates(config.templates).length,
     usingDefaultReviews: !normalizeReviews(config.reviews).length,
+    usingDefaultYoutube: !String(config.youtubeVideoId || config.youtubeUrl || '').trim(),
     updatedAt: config.updatedAt || null,
   };
 }

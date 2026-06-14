@@ -94,6 +94,11 @@ th{color:var(--muted);font-size:.75rem;text-transform:uppercase;letter-spacing:.
     <h2>🌐 Website Content Manager</h2>
     <p class="sub" style="margin-bottom:1rem">Add company demo video, client templates, and professional reviews — updates live on the website instantly.</p>
     <div id="contentStatus" class="loading">Manage website content below. Enter ADMIN_API_KEY to save.</div>
+    <div class="content-actions" style="margin-bottom:1rem">
+      <button class="btn" type="button" id="loadSampleBtn">Load &amp; Save Sample Content</button>
+      <button class="btn btn-secondary" type="button" id="previewSampleBtn">Preview Samples in Forms</button>
+      <a class="btn-outline" href="/" target="_blank" rel="noopener">Open Website →</a>
+    </div>
 
     <div class="content-block">
       <h3>📺 Company Demo YouTube Video</h3>
@@ -348,6 +353,7 @@ document.getElementById('apiKey').addEventListener('keydown', (event) => {
 });
 
 </script>
+<script src="js/sample-content.js"></script>
 <script src="js/admin-content.js"></script>
 <script>
 initAdminDashboard();
