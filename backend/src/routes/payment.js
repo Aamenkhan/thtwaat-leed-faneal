@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { z } from 'zod';
 import { env, assertRuntimeConfig } from '../config/env.js';
-import { listPlans, getPlanById } from '../constants/plans.js';
+import { listPlans, listCategories, getPlanById, resolvePlanId } from '../constants/plans.js';
 import {
   createRazorpayOrder,
   verifyRazorpaySignature,
@@ -34,6 +34,7 @@ router.get('/config', (_req, res) => {
       configured: isRazorpayConfigured(),
       keyId: env.razorpayKeyId || '',
       plans: listPlans(),
+      categories: listCategories(),
     },
   });
 });
@@ -49,7 +50,10 @@ router.post('/create-order', async (req, res, next) => {
       return next(new ValidationError('Invalid service plan selected'));
     }
 
-    const order = await createRazorpayOrder(result.data);
+    const order = await createRazorpayOrder({
+      ...result.data,
+      planId: resolvePlanId(result.data.planId),
+    });
 
     res.status(201).json({
       success: true,
@@ -70,7 +74,7 @@ router.post('/verify', async (req, res, next) => {
     }
 
     const {
-      planId,
+      planId: rawPlanId,
       name,
       email,
       phone,
@@ -79,6 +83,7 @@ router.post('/verify', async (req, res, next) => {
       razorpay_signature: signature,
     } = result.data;
 
+    const planId = resolvePlanId(rawPlanId);
     const plan = getPlanById(planId);
     if (!plan) {
       return next(new ValidationError('Invalid service plan selected'));

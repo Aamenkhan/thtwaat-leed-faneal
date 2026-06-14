@@ -152,7 +152,21 @@ section{position:relative;z-index:1;padding:6rem 5%}
 
 /* ══ SERVICES / PRICING ══ */
 .pricing-section{background:var(--bg2);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
-.pricing-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1.25rem;margin-top:3rem}
+.pricing-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1.25rem;margin-top:1.25rem}
+.pricing-quick{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1rem;margin:2.5rem 0 2rem}
+.pq-card{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r2);padding:1.5rem;text-align:center}
+.pq-card.hot{border-color:var(--gold);background:linear-gradient(135deg,rgba(240,180,41,.08),var(--bg3))}
+.pq-card span{font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:.5px}
+.pq-card strong{display:block;font-family:var(--mono);font-size:1.8rem;margin:.5rem 0;color:var(--gold)}
+.pq-card small{display:block;color:var(--muted);font-size:.8rem;margin-bottom:1rem;line-height:1.5}
+.pricing-cat{margin-top:3rem}
+.pricing-cat-head{display:flex;align-items:center;gap:.85rem;margin-bottom:.5rem}
+.pricing-cat-emoji{font-size:1.6rem}
+.pricing-cat-title{font-size:1.25rem;font-weight:700}
+.pricing-cat-sub{font-size:.82rem;color:var(--muted)}
+.pricing-all{text-align:center;margin-top:3rem;padding-top:2rem;border-top:1px solid var(--border)}
+.pricing-all p{color:var(--muted);font-size:.92rem}
+.pricing-all a{color:var(--gold);cursor:pointer}
 .p-card{background:var(--bg);border:1px solid var(--border);border-radius:var(--r2);padding:1.75rem 1.5rem;display:flex;flex-direction:column;position:relative;transition:transform .2s,border-color .2s}
 .p-card:hover{transform:translateY(-3px);border-color:var(--border2)}
 .p-card.hot{border-color:var(--gold);background:linear-gradient(135deg,rgba(240,180,41,.05) 0%,var(--bg) 50%)}
@@ -385,125 +399,12 @@ footer{padding:2.5rem 5%;border-top:1px solid var(--border);position:relative;z-
   </div>
 </section>
 
-<!-- PRICING — Service-wise -->
+<!-- PRICING — Full Service Catalog -->
 <section id="pricing" class="pricing-section">
   <div class="sec-tag">Transparent Pricing</div>
-  <h2 class="sec-h">One Price Per Service.<br/>No Surprises.</h2>
-  <p class="sec-sub">Choose your service type — each has fixed pricing, clear deliverables, and Razorpay payment.</p>
-  <div class="pricing-grid">
-
-    <!-- Mobile App -->
-    <div class="p-card rev">
-      <div class="p-emoji">📱</div>
-      <div class="p-name">Mobile App</div>
-      <div class="p-tagline">Flutter app for Android & iOS — Play Store + App Store ready, full backend included.</div>
-      <div class="p-price">₹29,999 <small></small></div>
-      <div class="p-period">One-time · 21 day delivery</div>
-      <ul class="p-feats">
-        <li>Flutter cross-platform app</li>
-        <li>Firebase / Supabase backend</li>
-        <li>Razorpay payment integration</li>
-        <li>Push notifications & analytics</li>
-        <li>Play Store submission help</li>
-        <li>30 days post-launch support</li>
-      </ul>
-      <button class="p-btn outline" onclick="openPayFor('mobile-app')">Book Mobile App →</button>
-    </div>
-
-    <!-- Website -->
-    <div class="p-card rev">
-      <div class="p-emoji">🌐</div>
-      <div class="p-name">Website</div>
-      <div class="p-tagline">Professional business or portfolio website — fast, SEO-optimized, mobile-first.</div>
-      <div class="p-price">₹9,999 <small></small></div>
-      <div class="p-period">One-time · 7 day delivery</div>
-      <ul class="p-feats">
-        <li>Up to 10 pages</li>
-        <li>Mobile responsive design</li>
-        <li>Contact form + WhatsApp button</li>
-        <li>Basic SEO setup</li>
-        <li>Hosted on Vercel (free)</li>
-        <li>1 revision round</li>
-      </ul>
-      <button class="p-btn outline" onclick="openPayFor('website')">Book Website →</button>
-    </div>
-
-    <!-- Web App / SaaS -->
-    <div class="p-card hot rev">
-      <div class="p-hot-badge">⭐ Most Booked</div>
-      <div class="p-emoji">💻</div>
-      <div class="p-name">Web App / SaaS</div>
-      <div class="p-tagline">Full-stack web application — dashboards, billing, multi-tenant, admin panel included.</div>
-      <div class="p-price">₹39,999 <small></small></div>
-      <div class="p-period">One-time · 30 day delivery</div>
-      <ul class="p-feats">
-        <li>Next.js / React frontend</li>
-        <li>Node.js + Prisma backend</li>
-        <li>PostgreSQL / Supabase DB</li>
-        <li>Auth, roles, admin dashboard</li>
-        <li>Razorpay billing integration</li>
-        <li>3 revision rounds</li>
-        <li>45 days post-launch support</li>
-      </ul>
-      <button class="p-btn solid" onclick="openPayFor('web-app')">Book Web App →</button>
-    </div>
-
-    <!-- AI Automation -->
-    <div class="p-card rev">
-      <div class="p-emoji">🤖</div>
-      <div class="p-name">AI Automation</div>
-      <div class="p-tagline">WhatsApp bots, workflow automation, Ollama local AI integration for your business.</div>
-      <div class="p-price">₹19,999 <small></small></div>
-      <div class="p-period">One-time · 14 day delivery</div>
-      <ul class="p-feats">
-        <li>WhatsApp AI bot (Meta Cloud API)</li>
-        <li>Ollama / OpenAI integration</li>
-        <li>Business workflow automation</li>
-        <li>Document processing & extraction</li>
-        <li>Dashboard to monitor bot</li>
-        <li>30 days support</li>
-      </ul>
-      <button class="p-btn outline" onclick="openPayFor('ai-automation')">Book AI Automation →</button>
-    </div>
-
-    <!-- AI / LLM Project -->
-    <div class="p-card rev">
-      <div class="p-emoji">🧠</div>
-      <div class="p-name">AI / LLM Project</div>
-      <div class="p-tagline">Custom LLM-powered apps — RAG systems, knowledge bases, AI SaaS features, local inference setup.</div>
-      <div class="p-price">₹59,999 <small></small></div>
-      <div class="p-period">One-time · 35–45 day delivery</div>
-      <ul class="p-feats">
-        <li>Custom LLM pipeline (RAG / fine-tune)</li>
-        <li>RTX 4090 local inference setup</li>
-        <li>Knowledge base & vector search</li>
-        <li>API + frontend interface</li>
-        <li>Ollama / OpenAI / Anthropic backend</li>
-        <li>Full documentation</li>
-        <li>60 days support</li>
-      </ul>
-      <button class="p-btn outline" onclick="openPayFor('ai-llm')">Book AI/LLM Project →</button>
-    </div>
-
-    <!-- Digital Marketing -->
-    <div class="p-card rev">
-      <div class="p-emoji">📊</div>
-      <div class="p-name">Digital Marketing</div>
-      <div class="p-tagline">Google Ads + Meta Ads + Local SEO + WhatsApp campaigns — full monthly management.</div>
-      <div class="p-price">₹7,999 <small>/month</small></div>
-      <div class="p-period">Monthly retainer · Cancel anytime</div>
-      <ul class="p-feats">
-        <li>Google Ads campaign setup & run</li>
-        <li>Meta (FB + Instagram) Ads</li>
-        <li>Local SEO for your city</li>
-        <li>WhatsApp bulk campaigns</li>
-        <li>Monthly performance report</li>
-        <li>Dedicated account manager</li>
-      </ul>
-      <button class="p-btn outline" onclick="openPayFor('digital-marketing')">Start Marketing →</button>
-    </div>
-
-  </div>
+  <h2 class="sec-h">Pick Your Package.<br/>Pay Securely. Start Fast.</h2>
+  <p class="sec-sub">22 fixed-price services for apps, websites, AI, marketing & full ecosystem builds — pay with UPI or card at checkout.</p>
+  <div id="pricingCatalog"></div>
 </section>
 
 <!-- FREE MVP BOOKING -->
@@ -552,6 +453,8 @@ footer{padding:2.5rem 5%;border-top:1px solid var(--border);position:relative;z-
 </div><!-- end mainSite -->
 
 <script src="js/leads-api.js"></script>
+<script src="js/plans-catalog.js"></script>
+<script src="js/pricing-page.js"></script>
 <script>
 // ═══════════════════════════════════
 //  STATE
@@ -846,6 +749,7 @@ function initReveal(){
   },{threshold:0.08});
   els.forEach(el=>obs.observe(el));
 }
+window.initReveal = initReveal;
 </script>
 </body>
 </html>

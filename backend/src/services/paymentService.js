@@ -1,6 +1,6 @@
 import crypto from 'crypto';
 import { env } from '../config/env.js';
-import { getPlanById } from '../constants/plans.js';
+import { getPlanById, resolvePlanId } from '../constants/plans.js';
 import { AppError } from '../utils/errors.js';
 import { logger } from '../utils/logger.js';
 
@@ -27,7 +27,7 @@ function getRazorpayAuthHeader() {
 }
 
 export async function createRazorpayOrder({ planId, name, email, phone }) {
-  const plan = getPlanById(planId);
+  const plan = getPlanById(resolvePlanId(planId));
   if (!plan) {
     throw new AppError('Invalid service plan selected', 400, 'INVALID_PLAN');
   }
