@@ -7,6 +7,7 @@ import healthRoutes from './routes/health.js';
 import leadRoutes from './routes/leads.js';
 import webhookRoutes from './routes/webhook.js';
 import settingsRoutes from './routes/settings.js';
+import paymentRoutes from './routes/payment.js';
 import { errorHandler, notFoundHandler } from './middleware/errorHandler.js';
 
 const app = express();
@@ -49,6 +50,9 @@ app.get('/', (_req, res) => {
       exportExcel: 'GET /leads/export',
       youtubeSettings: 'GET /settings/youtube',
       saveYoutube: 'PUT /settings/youtube',
+      paymentConfig: 'GET /payment/config',
+      createPaymentOrder: 'POST /payment/create-order',
+      verifyPayment: 'POST /payment/verify',
       whatsappWebhook: 'GET|POST /webhook/whatsapp',
     },
   });
@@ -59,6 +63,7 @@ app.use('/lead', leadRoutes);
 app.use('/leads', leadRoutes);
 app.use('/webhook/whatsapp', webhookRoutes);
 app.use('/settings', settingsRoutes);
+app.use('/payment', paymentRoutes);
 
 app.use(notFoundHandler);
 app.use(errorHandler);

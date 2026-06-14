@@ -146,6 +146,8 @@ export const env = {
   googleSheetId: requireEnv('GOOGLE_SHEET_ID', { optional: true }),
   googleServiceAccount: process.env.GOOGLE_SERVICE_ACCOUNT || '',
   adminApiKey: process.env.ADMIN_API_KEY || '',
+  razorpayKeyId: requireEnv('RAZORPAY_KEY_ID', { optional: true }),
+  razorpayKeySecret: requireEnv('RAZORPAY_KEY_SECRET', { optional: true }),
   corsOrigin: process.env.CORS_ORIGIN || '*',
 };
 
