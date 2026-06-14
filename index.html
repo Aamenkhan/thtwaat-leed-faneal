@@ -110,16 +110,15 @@ section{position:relative;z-index:1;padding:6rem 5%}
 .video-wrap{margin-top:3rem;position:relative}
 .yt-frame{position:relative;padding-bottom:56.25%;height:0;overflow:hidden;border-radius:var(--r2);border:1px solid var(--border2)}
 .yt-frame iframe{position:absolute;top:0;left:0;width:100%;height:100%;border:none;border-radius:var(--r2)}
-.yt-placeholder{position:absolute;inset:0;background:var(--bg3);border-radius:var(--r2);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1rem;cursor:pointer}
+.yt-placeholder{position:absolute;inset:0;background:var(--bg3);border-radius:var(--r2);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1rem;cursor:pointer;background-size:cover;background-position:center}
+.yt-placeholder.has-thumb::before{content:'';position:absolute;inset:0;background:rgba(0,0,0,.45);border-radius:var(--r2)}
+.yt-placeholder.has-thumb .yt-play-btn,.yt-placeholder.has-thumb .yt-label,.yt-placeholder.has-thumb .yt-sublabel{position:relative;z-index:1}
 .yt-play-btn{width:72px;height:72px;background:var(--gold);border-radius:50%;display:flex;align-items:center;justify-content:center;transition:transform .2s,opacity .2s}
 .yt-play-btn:hover{transform:scale(1.08)}
 .yt-play-btn svg{width:28px;height:28px;fill:#000;margin-left:4px}
 .yt-label{font-weight:600;font-size:1rem;color:var(--text)}
 .yt-sublabel{font-size:.8rem;color:var(--muted)}
-.video-id-input{margin-top:1.5rem;display:flex;gap:10px;max-width:480px}
-.video-id-input input{flex:1;background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:.65rem 1rem;color:var(--text);font-family:var(--mono);font-size:.82rem;outline:none}
-.video-id-input input:focus{border-color:rgba(240,180,41,.5)}
-.video-id-input button{background:var(--gold);color:#000;border:none;border-radius:8px;padding:.65rem 1rem;font-family:var(--font);font-weight:700;font-size:.82rem}
+.video-id-input{display:none}
 .video-points{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem;margin-top:2.5rem}
 .vp{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:1.25rem;display:flex;align-items:flex-start;gap:.75rem}
 .vp-icon{font-size:1.4rem;flex-shrink:0;margin-top:2px}
@@ -325,12 +324,8 @@ footer{padding:2.5rem 5%;border-top:1px solid var(--border);position:relative;z-
       <div class="yt-placeholder" id="ytPlaceholder" onclick="loadYT()">
         <div class="yt-play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
         <div class="yt-label">How Thtwaat Works — Company Overview</div>
-        <div class="yt-sublabel">Click to play · Add your YouTube Video ID below</div>
+        <div class="yt-sublabel">Click to play</div>
       </div>
-    </div>
-    <div class="video-id-input">
-      <input type="text" id="ytIdInput" placeholder="Paste YouTube Video ID (e.g. dQw4w9WgXcQ)" value=""/>
-      <button onclick="setYTId()">Set Video</button>
     </div>
   </div>
   <div class="video-points rev">
@@ -575,7 +570,11 @@ footer{padding:2.5rem 5%;border-top:1px solid var(--border);position:relative;z-
 let CU = null; // current user
 let selAmt = 2999900;
 let selName = 'Mobile App — Flutter';
-let ytVideoId = ''; // set by user in admin input
+let ytVideoId = '';
+
+// Paste your YouTube link OR video ID here (example below)
+const YOUTUBE_VIDEO_URL = '';
+// const YOUTUBE_VIDEO_URL = 'https://www.youtube.com/watch?v=YOUR_VIDEO_ID';
 
 const DB_KEY = 'tt_accounts';
 const USR_KEY = 'tt_user';
@@ -755,25 +754,42 @@ function doLogout(){
 // ═══════════════════════════════════
 //  YOUTUBE VIDEO
 // ═══════════════════════════════════
-function loadYT(){
-  if(!ytVideoId){
-    document.getElementById('ytIdInput').focus();
-    return;
-  }
-  const frame=document.getElementById('ytFrame');
-  frame.innerHTML='<iframe src="https://www.youtube.com/embed/'+ytVideoId+'?autoplay=1&rel=0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>';
+function parseYoutubeId(input) {
+  const val = String(input || '').trim();
+  if (!val) return '';
+  const match = val.match(/(?:v=|youtu\.be\/|embed\/|shorts\/)([a-zA-Z0-9_-]{11})/);
+  if (match) return match[1];
+  if (/^[a-zA-Z0-9_-]{11}$/.test(val)) return val;
+  return '';
 }
 
-function setYTId(){
-  const val=document.getElementById('ytIdInput').value.trim();
-  if(!val){alert('Please paste a YouTube Video ID (the part after ?v= in the URL).');return;}
-  // Support full URL too
-  const match=val.match(/(?:v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
-  ytVideoId = match ? match[1] : val;
-  // Immediately load
-  const frame=document.getElementById('ytFrame');
-  frame.innerHTML='<iframe src="https://www.youtube.com/embed/'+ytVideoId+'?rel=0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>';
+function embedYoutube(autoplay) {
+  if (!ytVideoId) return;
+  const frame = document.getElementById('ytFrame');
+  const autoplayParam = autoplay ? '&autoplay=1' : '';
+  frame.innerHTML = '<iframe src="https://www.youtube.com/embed/' + ytVideoId + '?rel=0' + autoplayParam + '" title="THTWAAT Company Overview" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>';
 }
+
+function initYoutube() {
+  ytVideoId = parseYoutubeId(YOUTUBE_VIDEO_URL);
+  if (!ytVideoId) return;
+
+  const placeholder = document.getElementById('ytPlaceholder');
+  if (placeholder) {
+    placeholder.classList.add('has-thumb');
+    placeholder.style.backgroundImage = 'url(https://img.youtube.com/vi/' + ytVideoId + '/hqdefault.jpg)';
+  }
+}
+
+function loadYT() {
+  if (!ytVideoId) {
+    alert('YouTube link abhi set nahi hai.\n\nindex.html mein YOUTUBE_VIDEO_URL update karein.');
+    return;
+  }
+  embedYoutube(true);
+}
+
+initYoutube();
 
 // ═══════════════════════════════════
 //  PAYMENT MODAL
