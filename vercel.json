@@ -22,6 +22,9 @@
     { "source": "/payment/config", "destination": "/api" },
     { "source": "/payment/create-order", "destination": "/api" },
     { "source": "/payment/verify", "destination": "/api" },
+    { "source": "/vision/public", "destination": "/api" },
+    { "source": "/vision/submit", "destination": "/api" },
+    { "source": "/vision", "destination": "/api" },
     { "source": "/webhook/whatsapp", "destination": "/api" }
   ],
   "cleanUrls": true,

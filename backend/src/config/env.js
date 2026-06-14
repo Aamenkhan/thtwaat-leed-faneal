@@ -148,6 +148,8 @@ export const env = {
   adminApiKey: process.env.ADMIN_API_KEY || '',
   razorpayKeyId: requireEnv('RAZORPAY_KEY_ID', { optional: true }),
   razorpayKeySecret: requireEnv('RAZORPAY_KEY_SECRET', { optional: true }),
+  facebookPageId: requireEnv('FACEBOOK_PAGE_ID', { optional: true }),
+  facebookPageAccessToken: requireEnv('FACEBOOK_PAGE_ACCESS_TOKEN', { optional: true }),
   corsOrigin: process.env.CORS_ORIGIN || '*',
 };
 

@@ -151,6 +151,26 @@ th{color:var(--muted);font-size:.75rem;text-transform:uppercase;letter-spacing:.
     </div>
   </div>
 
+  <div class="panel content-panel" id="visionsPanel" style="margin-bottom:1.5rem">
+    <h2>💡 Your Vision — User Submissions</h2>
+    <p class="sub" style="margin-bottom:1rem">Visions shared from the website. Posted to Facebook Page as <strong>Your Vision</strong> when <code>FACEBOOK_PAGE_ID</code> is set on Vercel.</p>
+    <div id="visionAdminStatus" class="loading">Enter ADMIN_API_KEY and load dashboard to see visions.</div>
+    <div id="visionAdminStats" style="display:flex;gap:1rem;flex-wrap:wrap;margin:1rem 0"></div>
+    <div style="overflow-x:auto;margin-top:1rem">
+      <table>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Vision</th>
+            <th>Facebook</th>
+            <th>Time</th>
+          </tr>
+        </thead>
+        <tbody id="visionRows"></tbody>
+      </table>
+    </div>
+  </div>
+
   <a class="back" href="/">← Back to website</a>
   <div id="status" class="loading" style="margin-top:1rem">Enter ADMIN_API_KEY once — leads load automatically.</div>
 
@@ -235,6 +255,50 @@ function formatTime(iso) {
   }
 }
 
+async function loadVisionAdmin(apiKey) {
+  const status = document.getElementById('visionAdminStatus');
+  const statsEl = document.getElementById('visionAdminStats');
+  const rowsEl = document.getElementById('visionRows');
+
+  if (!apiKey) {
+    status.className = 'loading';
+    status.textContent = 'Enter ADMIN_API_KEY to view vision submissions.';
+    return;
+  }
+
+  try {
+    const response = await fetch(`${API_BASE}/vision`, {
+      headers: { 'x-api-key': apiKey },
+    });
+    const payload = await response.json();
+    if (!response.ok) throw new Error(payload?.error?.message || 'Failed to load visions');
+
+    const data = payload.data || {};
+    statsEl.innerHTML = `
+      <div class="card" style="padding:1rem;min-width:140px"><div class="label">Total Visions</div><div class="value" style="font-size:1.4rem">${data.total || 0}</div></div>
+      <div class="card" style="padding:1rem;min-width:140px"><div class="label">User Submitted</div><div class="value" style="font-size:1.4rem">${data.userSubmitted || 0}</div></div>
+      <div class="card" style="padding:1rem;min-width:140px"><div class="label">On Facebook</div><div class="value" style="font-size:1.4rem">${data.facebookPosted || 0}</div></div>
+      <div class="card" style="padding:1rem;min-width:180px"><div class="label">Facebook API</div><div class="value" style="font-size:1rem">${data.facebookConfigured ? '🟢 Connected' : '⚠️ Not configured'}</div></div>
+    `;
+
+    const rows = (data.recent || []).slice(0, 30).map((item) => `
+      <tr>
+        <td>${item.name || '—'}</td>
+        <td class="msg">${item.vision || '—'}</td>
+        <td>${item.facebookPosted ? '✅ Posted' : '—'}</td>
+        <td>${formatTime(item.timestamp)}</td>
+      </tr>
+    `).join('');
+
+    rowsEl.innerHTML = rows || '<tr><td colspan="4" class="empty">No visions yet</td></tr>';
+    status.className = 'loading';
+    status.textContent = `${data.total || 0} visions on website · ${data.facebookPosted || 0} posted to Facebook Page`;
+  } catch (error) {
+    status.className = 'error';
+    status.textContent = error.message;
+  }
+}
+
 async function loadDashboard(silent = false) {
   const apiKey = document.getElementById('apiKey').value.trim();
   const status = document.getElementById('status');
@@ -263,6 +327,7 @@ async function loadDashboard(silent = false) {
     localStorage.setItem(ADMIN_KEY_STORAGE, apiKey);
     startAutoRefresh();
     if (window.AdminContent) AdminContent.loadAllContent();
+    loadVisionAdmin(apiKey);
 
     const data = payload.data;
     document.getElementById('stats').hidden = false;

@@ -8,6 +8,7 @@ import leadRoutes from './routes/leads.js';
 import webhookRoutes from './routes/webhook.js';
 import settingsRoutes from './routes/settings.js';
 import paymentRoutes from './routes/payment.js';
+import visionRoutes from './routes/vision.js';
 import { errorHandler, notFoundHandler } from './middleware/errorHandler.js';
 
 const app = express();
@@ -56,6 +57,9 @@ app.get('/', (_req, res) => {
       paymentConfig: 'GET /payment/config',
       createPaymentOrder: 'POST /payment/create-order',
       verifyPayment: 'POST /payment/verify',
+      publicVisions: 'GET /vision/public',
+      submitVision: 'POST /vision/submit',
+      adminVisions: 'GET /vision',
       whatsappWebhook: 'GET|POST /webhook/whatsapp',
     },
   });
@@ -67,6 +71,7 @@ app.use('/leads', leadRoutes);
 app.use('/webhook/whatsapp', webhookRoutes);
 app.use('/settings', settingsRoutes);
 app.use('/payment', paymentRoutes);
+app.use('/vision', visionRoutes);
 
 app.use(notFoundHandler);
 app.use(errorHandler);

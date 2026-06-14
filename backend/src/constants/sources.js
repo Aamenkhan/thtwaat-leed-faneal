@@ -1,5 +1,6 @@
 export const LEAD_SOURCES = Object.freeze([
   'Website',
+  'Your Vision',
   'WhatsApp Channel',
   'WhatsApp Community',
   'Direct WhatsApp Chat',
