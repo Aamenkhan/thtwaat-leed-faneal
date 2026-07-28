@@ -10,21 +10,40 @@
 <meta name="robots" content="index, follow"/>
 <meta name="theme-color" content="#0f766e"/>
 <link rel="canonical" href="https://tts.thtwaat.com/"/>
-<link rel="icon" href="/favicon.svg" type="image/svg+xml"/>
-<link rel="apple-touch-icon" href="/favicon.svg"/>
+<link rel="icon" href="/favicon.ico" sizes="any"/>
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png"/>
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"/>
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"/>
+<link rel="shortcut icon" href="/favicon.ico"/>
 <meta property="og:type" content="website"/>
 <meta property="og:site_name" content="Thtwaat Technology Solutions"/>
 <meta property="og:locale" content="en_IN"/>
 <meta property="og:url" content="https://tts.thtwaat.com/"/>
 <meta property="og:title" content="Thtwaat Technology Solutions — Custom Apps, Web, AI, SaaS & Windows IDE"/>
 <meta property="og:description" content="Customized apps, web apps, AI products, SaaS platforms, and Windows IDE — fixed ₹ pricing, UPI &amp; card payments."/>
-<meta property="og:image" content="https://tts.thtwaat.com/og-image.png"/>
-<meta property="og:image:width" content="1376"/>
-<meta property="og:image:height" content="768"/>
-<meta name="twitter:card" content="summary_large_image"/>
+<meta property="og:image" content="https://tts.thtwaat.com/logo.png"/>
+<meta property="og:image:alt" content="THTWAAT Technology Solutions"/>
+<meta property="og:image:type" content="image/png"/>
+<meta property="og:image:width" content="640"/>
+<meta property="og:image:height" content="640"/>
+<meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Thtwaat Technology Solutions — Custom Apps, Web, AI &amp; SaaS"/>
 <meta name="twitter:description" content="Build custom apps, web apps, AI products, SaaS, and Windows IDE with fixed INR pricing."/>
-<meta name="twitter:image" content="https://tts.thtwaat.com/og-image.png"/>
+<meta name="twitter:image" content="https://tts.thtwaat.com/logo.png"/>
+<meta name="twitter:image:alt" content="THTWAAT Technology Solutions"/>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "THTWAAT Technology Solutions",
+  "url": "https://tts.thtwaat.com",
+  "logo": "https://tts.thtwaat.com/logo.png",
+  "image": "https://tts.thtwaat.com/logo.png",
+  "description": "Custom apps, web apps, AI products, SaaS platforms, and Windows IDE software with fixed INR pricing.",
+  "email": "thtwaat@gmail.com",
+  "sameAs": ["https://thtwaat.com", "https://retailproai.in", "https://viralawaaz.com"]
+}
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
 <link href="css/site-theme.css" rel="stylesheet"/>
@@ -70,8 +89,9 @@ body::before{content:'';position:fixed;inset:0;background:
 #authGate{position:fixed;inset:0;background:var(--bg);z-index:1000;display:flex;align-items:center;justify-content:center;padding:1rem}
 #authGate.hidden{display:none}
 .auth-box{width:100%;max-width:420px;position:relative;z-index:1}
-.auth-logo{font-family:var(--mono);font-size:1.4rem;font-weight:700;margin-bottom:2.5rem;color:var(--gold)}
-.auth-logo span{color:var(--text)}
+.auth-logo{display:flex;justify-content:center;margin-bottom:1.75rem}
+.auth-logo img{width:min(220px,72vw);height:auto;display:block;object-fit:contain}
+.auth-brand-mark{width:min(220px,72vw);height:auto}
 .auth-headline{font-size:clamp(1.6rem,4vw,2.2rem);font-weight:700;line-height:1.15;margin-bottom:.5rem;letter-spacing:-.5px}
 .auth-sub{color:var(--muted);font-size:.95rem;margin-bottom:2rem}
 .auth-tabs{display:flex;background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:3px;gap:3px;margin-bottom:1.75rem}
@@ -89,11 +109,16 @@ body::before{content:'';position:fixed;inset:0;background:
 
 /* ══ NAV ══ */
 nav{position:fixed;top:122px;left:0;right:0;z-index:500;height:64px;display:flex;align-items:center;justify-content:space-between;padding:0 5%;background:rgba(255,255,255,.88);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);box-shadow:0 1px 0 rgba(15,23,42,.03)}
-.nav-logo{display:flex;align-items:center;gap:.65rem}
-.nav-logo-mark{width:34px;height:34px;border-radius:9px;background:linear-gradient(135deg,var(--gold),var(--teal));display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:.72rem;font-weight:700;color:#fff;flex-shrink:0;box-shadow:0 4px 14px rgba(15,118,110,.28)}
+.nav-logo{display:flex;align-items:center;gap:.75rem;min-width:0}
+.nav-logo img,.brand-logo{height:42px;width:auto;max-width:min(200px,46vw);display:block;object-fit:contain}
+.nav-logo-mark{display:none}
 .nav-logo-text{font-family:var(--mono);font-weight:700;font-size:1.05rem;color:var(--gold);line-height:1.15}
 .nav-logo-text span{color:var(--text)}
 .nav-logo-text small{display:block;font-family:var(--font);font-size:.62rem;font-weight:500;color:var(--muted);max-width:260px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+@media(max-width:680px){
+  .nav-logo img,.brand-logo{height:34px;max-width:140px}
+  .nav-logo-text{display:none}
+}
 .project-chat-bar{position:fixed;top:0;left:0;right:0;z-index:600;height:50px;display:flex;align-items:center;justify-content:center;padding:0 4%;background:linear-gradient(90deg,#0f766e,#0369a1);border-bottom:1px solid rgba(255,255,255,.12);box-shadow:0 4px 18px rgba(15,118,110,.22)}
 .project-chat-inner{display:flex;align-items:center;gap:.85rem;flex-wrap:wrap;justify-content:center;width:100%;max-width:1100px}
 .project-chat-inner p{margin:0;font-size:.84rem;color:#e0f2fe}
@@ -104,7 +129,8 @@ nav{position:fixed;top:122px;left:0;right:0;z-index:500;height:64px;display:flex
 .vision-bar{position:fixed;top:50px;left:0;right:0;z-index:590;background:rgba(255,255,255,.94);border-bottom:1px solid var(--border);backdrop-filter:blur(12px)}
 .vision-bar-inner{display:flex;align-items:center;gap:1rem;padding:.65rem 5%;min-height:72px}
 .vision-brand{display:flex;align-items:center;gap:.65rem;flex-shrink:0}
-.vision-logo-mark{width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg,#0f766e,#0284c7);display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-weight:700;color:#fff;font-size:.78rem;box-shadow:0 6px 16px rgba(15,118,110,.22)}
+.vision-logo-mark{width:42px;height:42px;border-radius:10px;overflow:hidden;background:#fff;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 4px 12px rgba(15,23,42,.06)}
+.vision-logo-mark img{width:100%;height:100%;object-fit:contain;display:block}
 .vision-brand-title{font-weight:700;font-size:.88rem;color:#0f766e;line-height:1.1}
 .vision-brand-sub{font-size:.68rem;color:var(--muted)}
 .vision-ticker-shell{flex:1;min-width:0;overflow:hidden;border:1px solid var(--border);border-radius:10px;background:var(--bg3);padding:.55rem .85rem}
@@ -129,7 +155,6 @@ nav{position:fixed;top:122px;left:0;right:0;z-index:500;height:64px;display:flex
 #visionFormStatus.loading{color:#0369a1}
 @media(max-width:900px){.vision-brand-sub{display:none}.vision-bar-inner{flex-wrap:wrap;padding:.65rem 4%}.vision-ticker-shell{order:3;width:100%}.nav-logo-text small{max-width:120px}}
 @media(max-width:720px){.project-chat-bar{height:auto;padding:.55rem 4%}.project-chat-inner p{font-size:.72rem;text-align:center}.project-chat-btn{width:100%;margin-top:.25rem}nav{top:136px}.hero{padding-top:220px!important}}
-.nav-logo{font-family:var(--mono);font-weight:700;font-size:1.05rem;color:var(--gold)}
 .nav-right{display:flex;align-items:center;gap:1rem}
 .nav-links{display:flex;align-items:center;gap:1.5rem}
 .nav-links a{font-size:.85rem;font-weight:500;color:var(--muted);transition:color .2s}
@@ -144,8 +169,8 @@ nav{position:fixed;top:122px;left:0;right:0;z-index:500;height:64px;display:flex
 
 /* ══ HERO ══ */
 .hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:200px 5% 60px;text-align:center;position:relative;z-index:1}
-.hero-brand{font-family:var(--mono);font-size:clamp(1.15rem,3vw,1.65rem);font-weight:700;color:var(--gold);letter-spacing:-.02em;margin-bottom:1rem}
-.hero-brand span{color:var(--text);font-weight:600}
+.hero-brand{margin-bottom:1.1rem}
+.hero-brand img{width:min(280px,78vw);height:auto;display:block;margin:0 auto;object-fit:contain}
 .hero-tag{display:inline-flex;align-items:center;gap:8px;border-radius:100px;padding:.38rem 1rem;font-family:var(--mono);font-size:.72rem;letter-spacing:.8px;text-transform:uppercase;margin-bottom:1.75rem}
 .hero h1{font-size:clamp(2.4rem,5.5vw,4.4rem);font-weight:800;letter-spacing:-2px;line-height:1.08;margin-bottom:1.25rem;max-width:880px}
 .hero h1 .hi{background:linear-gradient(135deg,var(--gold),var(--teal));-webkit-background-clip:text;-webkit-text-fill-color:transparent;display:inline-block}
@@ -353,8 +378,8 @@ section{position:relative;z-index:1;padding:6rem 5%}
 /* ══ FOOTER ══ */
 footer{padding:2.5rem 5%;border-top:1px solid var(--border);position:relative;z-index:1}
 .footer-inner{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1.5rem}
-.f-logo{font-family:var(--mono);font-weight:700;font-size:1rem;color:var(--gold)}
-.f-logo span{color:var(--muted)}
+.f-logo{display:inline-flex;align-items:center}
+.f-logo img{height:40px;width:auto;max-width:180px;object-fit:contain;display:block}
 .f-links{display:flex;gap:1.5rem;flex-wrap:wrap}
 .f-links a{font-size:.82rem;color:var(--muted);transition:color .2s}
 .f-links a:hover{color:var(--text)}
@@ -385,7 +410,9 @@ footer{padding:2.5rem 5%;border-top:1px solid var(--border);position:relative;z-
 ═══════════════════════════════════ -->
 <div id="authGate">
   <div class="auth-box">
-    <div class="auth-logo">THTWAAT<span> Technology</span></div>
+    <div class="auth-logo">
+      <img src="/logo.png" width="220" height="220" alt="THTWAAT Technology Solutions" decoding="async" fetchpriority="high"/>
+    </div>
     <h1 class="auth-headline">Custom Apps, Web,<br/>AI &amp; SaaS — Built Right</h1>
     <p class="auth-sub">Thtwaat Technology Solutions — create a free account to explore packages, checkout, and start your project.</p>
     <div class="auth-tabs">
@@ -429,7 +456,7 @@ footer{padding:2.5rem 5%;border-top:1px solid var(--border);position:relative;z-
 <div class="vision-bar rev" id="visionBar">
   <div class="vision-bar-inner">
     <div class="vision-brand">
-      <div class="vision-logo-mark">TT</div>
+      <div class="vision-logo-mark"><img src="/logo.png" width="42" height="42" alt="THTWAAT Technology Solutions" decoding="async"/></div>
       <div>
         <div class="vision-brand-title">Your Vision</div>
         <div class="vision-brand-sub">Start your message · company admin receives it</div>
@@ -445,8 +472,10 @@ footer{padding:2.5rem 5%;border-top:1px solid var(--border);position:relative;z-
 <!-- NAV -->
 <nav>
   <div class="nav-logo">
-    <div class="nav-logo-mark">TT</div>
-    <div class="nav-logo-text">THTWAAT<span></span><small id="navVisionPeek">Technology Solutions — Apps · Web · AI · SaaS · Windows IDE</small></div>
+    <a href="/" aria-label="THTWAAT Technology Solutions home">
+      <img class="brand-logo" src="/logo.png" width="160" height="160" alt="THTWAAT Technology Solutions" decoding="async"/>
+    </a>
+    <div class="nav-logo-text"><small id="navVisionPeek">Technology Solutions — Apps · Web · AI · SaaS · Windows IDE</small></div>
   </div>
   <div class="nav-links">
     <a href="#how">Demo</a>
@@ -490,7 +519,9 @@ footer{padding:2.5rem 5%;border-top:1px solid var(--border);position:relative;z-
 <!-- HERO -->
 <section class="hero">
   <div style="position:relative;z-index:1;display:flex;flex-direction:column;align-items:center">
-    <div class="hero-brand rev">Thtwaat <span>Technology Solutions</span></div>
+    <div class="hero-brand rev">
+      <img src="/logo.png" width="280" height="280" alt="THTWAAT Technology Solutions" decoding="async"/>
+    </div>
     <div class="hero-tag">Custom Apps · Web Apps · AI · SaaS · Windows IDE</div>
     <h1 class="rev">We build software<br/><span class="hi">your business actually needs.</span></h1>
     <p class="hero-desc rev">Customized mobile &amp; web apps, AI products, SaaS platforms, and Windows desktop / IDE tools — fixed pricing, clear scope, shipped on time.</p>
@@ -654,7 +685,7 @@ footer{padding:2.5rem 5%;border-top:1px solid var(--border);position:relative;z-
 <!-- FOOTER -->
 <footer>
   <div class="footer-inner">
-    <div class="f-logo">THTWAAT<span> Technology Solutions</span></div>
+    <div class="f-logo"><img src="/logo.png" width="160" height="160" alt="THTWAAT Technology Solutions" decoding="async" loading="lazy"/></div>
     <div class="f-links">
       <a href="https://thtwaat.com" target="_blank">Marketplace</a>
       <a href="https://retailproai.in" target="_blank">RetailPro AI</a>

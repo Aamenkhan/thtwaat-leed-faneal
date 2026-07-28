@@ -8,17 +8,21 @@
 <meta name="robots" content="index, follow"/>
 <meta name="theme-color" content="#0f766e"/>
 <link rel="canonical" href="https://tts.thtwaat.com/checkout"/>
-<link rel="icon" href="/favicon.svg" type="image/svg+xml"/>
+<link rel="icon" href="/favicon.ico" sizes="any"/>
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png"/>
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"/>
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"/>
 <meta property="og:type" content="website"/>
 <meta property="og:site_name" content="Thtwaat Technology Solutions"/>
 <meta property="og:url" content="https://tts.thtwaat.com/checkout"/>
 <meta property="og:title" content="Secure Checkout | Thtwaat Technology Solutions"/>
 <meta property="og:description" content="Pay securely in ₹ INR via UPI or card for custom apps, web, AI, SaaS, and Windows IDE packages."/>
-<meta property="og:image" content="https://tts.thtwaat.com/og-image.png"/>
-<meta name="twitter:card" content="summary_large_image"/>
+<meta property="og:image" content="https://tts.thtwaat.com/logo.png"/>
+<meta property="og:image:alt" content="THTWAAT Technology Solutions"/>
+<meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Secure Checkout | Thtwaat Technology Solutions"/>
 <meta name="twitter:description" content="Pay securely in ₹ INR via UPI or card."/>
-<meta name="twitter:image" content="https://tts.thtwaat.com/og-image.png"/>
+<meta name="twitter:image" content="https://tts.thtwaat.com/logo.png"/>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
 <link href="css/site-theme.css" rel="stylesheet"/>
@@ -32,8 +36,9 @@
 body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:100vh}
 .wrap{max-width:920px;margin:0 auto;padding:2rem 1.25rem 4rem}
 .top{display:flex;justify-content:space-between;align-items:flex-start;gap:1rem;margin-bottom:1.5rem;flex-wrap:wrap}
-.logo{font-family:var(--mono);font-weight:700;color:var(--gold);font-size:1rem}
-.logo span{color:var(--muted)}
+.logo{display:inline-flex;align-items:center}
+.logo img{height:48px;width:auto;max-width:min(200px,55vw);object-fit:contain;display:block}
+.logo span{display:none}
 .back{color:var(--gold);text-decoration:none;font-size:.9rem;white-space:nowrap}
 h1{font-size:clamp(1.6rem,4vw,2rem);margin:.4rem 0 .35rem;letter-spacing:-.5px}
 .sub{color:var(--muted);font-size:.92rem;line-height:1.6;max-width:520px}
@@ -95,7 +100,7 @@ h1{font-size:clamp(1.6rem,4vw,2rem);margin:.4rem 0 .35rem;letter-spacing:-.5px}
 <div class="wrap">
   <div class="top">
     <div>
-      <div class="logo">THTWAAT<span> Technology · Checkout</span></div>
+      <div class="logo"><a href="/" aria-label="THTWAAT Technology Solutions home"><img src="/logo.png" width="160" height="160" alt="THTWAAT Technology Solutions" decoding="async"/></a></div>
       <h1>Complete Your Order</h1>
       <p class="sub">Custom apps, web apps, AI, SaaS &amp; Windows IDE — prices in Indian Rupees (₹). Pay with UPI or card via Razorpay.</p>
       <div class="trust">
