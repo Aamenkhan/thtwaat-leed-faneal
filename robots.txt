@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /pages/admin
+Disallow: /pages/dashboard
+Disallow: /api
+
+Sitemap: https://tts.thtwaat.com/sitemap.xml
