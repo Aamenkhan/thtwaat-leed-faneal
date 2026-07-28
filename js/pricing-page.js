@@ -2,7 +2,7 @@
   const catalog = window.THTWAAT_CATALOG;
   if (!catalog) return;
 
-  const fmt = catalog.formatUsd || catalog.formatInr;
+  const fmt = catalog.formatInr || catalog.formatUsd;
   const FEATURED = ['project-chat-start', 'website-start', 'app-start', 'custom-app', 'ai-automation', 'ai-llm-project', 'full-ecosystem'];
 
   function renderPricing() {
@@ -20,13 +20,13 @@
       <div class="pricing-quick rev">
         <div class="pq-card hot" style="border-color:#10b981;background:linear-gradient(135deg,rgba(16,185,129,.12),var(--bg3))">
           <span>Start Chat</span><strong>${fmt(100)}</strong><small>Talk about your project — instant access</small>
-          <button class="p-btn solid btn-chat-start" onclick="openPayFor('project-chat-start')">Start Chat $1 →</button>
+          <button class="p-btn solid btn-chat-start" onclick="openPayFor('project-chat-start')">Start Chat ₹1 →</button>
         </div>
-        <div class="pq-card"><span>Starter</span><strong>${fmt(9900)}</strong><small>Website &amp; landing pages</small><button class="p-btn solid" onclick="openPayFor('website-start')">Start at $99 →</button></div>
-        <div class="pq-card hot"><span>Most Popular</span><strong>${fmt(99900)}</strong><small>App · Web · AI automation</small><button class="p-btn solid" onclick="openPayFor('app-start')">Get Started $999 →</button></div>
+        <div class="pq-card"><span>Starter</span><strong>${fmt(9900)}</strong><small>Website &amp; landing pages</small><button class="p-btn solid" onclick="openPayFor('website-start')">Start at ₹99 →</button></div>
+        <div class="pq-card hot"><span>Most Popular</span><strong>${fmt(99900)}</strong><small>App · Web · AI automation</small><button class="p-btn solid" onclick="openPayFor('app-start')">Get Started ₹999 →</button></div>
         <div class="pq-card"><span>Enterprise</span><strong>${fmt(1499999900)}</strong><small>Full ecosystem — end to end</small><button class="p-btn outline" onclick="openPayFor('full-ecosystem')">Contact Sales →</button></div>
       </div>
-      <p class="price-note rev">All prices fixed upfront · Secure checkout with credit/debit card or UPI · No hidden fees.</p>
+      <p class="price-note rev">Saari prices Indian Rupees (₹) mein · Card / UPI se secure checkout · Hidden fees nahi.</p>
     `;
 
     Object.values(byCategory).forEach((group) => {
@@ -59,7 +59,7 @@
             <div class="p-price">${fmt(plan.amount)}</div>
             <div class="p-period">${plan.delivery || ''}</div>
             <ul class="p-feats">${(plan.feats || []).slice(0, 4).map((f) => `<li>${f}</li>`).join('')}</ul>
-            <button class="p-btn ${plan.amount <= 99900 ? 'solid' : 'outline'}${plan.id === 'project-chat-start' ? ' btn-chat-start' : ''}" onclick="openPayFor('${plan.id}')">${plan.id === 'project-chat-start' ? 'Start Chat $1 →' : 'Checkout →'}</button>
+            <button class="p-btn ${plan.amount <= 99900 ? 'solid' : 'outline'}${plan.id === 'project-chat-start' ? ' btn-chat-start' : ''}" onclick="openPayFor('${plan.id}')">${plan.id === 'project-chat-start' ? 'Start Chat ₹1 →' : 'Checkout →'}</button>
           </div>
         `;
       });

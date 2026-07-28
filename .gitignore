@@ -8,3 +8,4 @@ data/site-config.json
 !data/.gitkeep
 npm-debug.log*
 .DS_Store
+.env*

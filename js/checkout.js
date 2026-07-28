@@ -26,8 +26,8 @@
   }
 
   function formatInr(paise) {
-    if (catalog?.formatUsd) return catalog.formatUsd(paise);
-    return '$' + Math.round(paise / 100).toLocaleString('en-US');
+    if (catalog?.formatInr) return catalog.formatInr(paise);
+    return '₹' + Math.round(paise / 100).toLocaleString('en-IN');
   }
 
   function resolvePlanId(planId) {
@@ -225,7 +225,7 @@
     }
 
     if (!razorpayConfigured) {
-      showError('Razorpay is not configured yet. Add RAZORPAY_KEY_ID and RAZORPAY_KEY_SECRET in Vercel.');
+      showError('Razorpay configure nahi hai. Vercel Environment Variables mein RAZORPAY_KEY_ID + RAZORPAY_KEY_SECRET set karein, phir Redeploy.');
       return;
     }
 
@@ -363,6 +363,11 @@
       }
       if (config.categories?.length) {
         categories = [{ id: 'all', label: 'All Plans', emoji: '✨' }, ...config.categories];
+      }
+      if (!razorpayConfigured) {
+        showError(
+          'Payment abhi active nahi hai. Vercel → Project → Settings → Environment Variables mein RAZORPAY_KEY_ID aur RAZORPAY_KEY_SECRET add karke Redeploy karein.',
+        );
       }
     } catch (err) {
       console.warn('[Checkout] Using catalog fallback', err.message);

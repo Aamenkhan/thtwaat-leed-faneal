@@ -14,7 +14,7 @@ export const PAYMENT_PLANS = Object.freeze({
     amount: 100,
     delivery: 'Instant access',
     category: 'starter',
-    tagline: 'Pay $1 to unlock direct project chat and priority response.',
+    tagline: 'Pay ₹1 to unlock direct project chat and priority response.',
     emoji: '💬',
   },
   'website-start': {
@@ -194,8 +194,17 @@ export const PAYMENT_PLANS = Object.freeze({
     amount: 999999900,
     delivery: '60–90 days',
     category: 'ai',
-    tagline: 'Full AI developer IDE platform as a service.',
+    tagline: 'Cloud AI developer IDE platform as a service.',
     emoji: '💡',
+  },
+  'windows-ide': {
+    id: 'windows-ide',
+    name: 'Windows IDE / Desktop App',
+    amount: 9999900,
+    delivery: '30–45 days',
+    category: 'custom',
+    tagline: 'Custom Windows desktop software or IDE for your team.',
+    emoji: '🪟',
   },
   'founder-environment': {
     id: 'founder-environment',

@@ -13,7 +13,7 @@
   ];
 
   const PLANS = [
-    { id: 'project-chat-start', name: 'Start Chat About This Project', amount: 100, delivery: 'Instant', category: 'starter', tagline: 'Pay $1 to unlock direct project chat & priority reply.', emoji: '💬', feats: ['Direct team chat access', 'Discuss your project scope', 'Priority 2-hour response', '$1 credited toward build'] },
+    { id: 'project-chat-start', name: 'Start Chat About This Project', amount: 100, delivery: 'Instant', category: 'starter', tagline: 'Pay ₹1 to unlock direct project chat & priority reply.', emoji: '💬', feats: ['Direct team chat access', 'Discuss your project scope', 'Priority 2-hour response', '₹1 credited toward build'] },
     { id: 'website-start', name: 'Website Start', amount: 9900, delivery: '3–5 days', category: 'starter', tagline: 'Launch your first business website fast.', emoji: '🌐', feats: ['Up to 5 pages', 'Mobile responsive', 'WhatsApp button', 'Basic SEO'] },
     { id: 'landing-page-marketing', name: 'Landing Page Marketing', amount: 9900, delivery: '2–4 days', category: 'starter', tagline: 'High-converting page for ads & leads.', emoji: '🎯', feats: ['Single landing page', 'Lead capture form', 'Ad-ready layout', 'Fast delivery'] },
     { id: 'app-start', name: 'App Start Package', amount: 99900, delivery: '7–14 days', category: 'starter', tagline: 'MVP mobile app starter — Android ready.', emoji: '📱', feats: ['Flutter MVP', 'Firebase backend', 'Core screens', 'Play Store ready'] },
@@ -33,7 +33,8 @@
     { id: 'ai-web-app', name: 'AI Web App', amount: 9999900, delivery: '30–45 days', category: 'ai', tagline: 'AI-powered web platform.', emoji: '✨', feats: ['LLM features', 'Admin dashboard', 'API layer', 'Cloud deploy'] },
     { id: 'ai-llm-project', name: 'AI LLM Project', amount: 99999900, delivery: '45–60 days', category: 'ai', tagline: 'Custom LLM, RAG & knowledge base.', emoji: '🔬', feats: ['RAG pipeline', 'Vector search', 'Fine-tuning', 'Production API'] },
     { id: 'ai-model-training', name: 'AI Model Training', amount: 199999900, delivery: '30–60 days', category: 'ai', tagline: 'Train & fine-tune on your data.', emoji: '⚙️', feats: ['Dataset prep', 'Fine-tuning', 'Evaluation', 'Deployment'] },
-    { id: 'ai-ide-saas', name: 'AI IDE SaaS', amount: 999999900, delivery: '60–90 days', category: 'ai', tagline: 'Full AI developer IDE platform.', emoji: '💡', feats: ['IDE platform', 'Multi-tenant SaaS', 'AI copilot', 'Billing system'] },
+    { id: 'ai-ide-saas', name: 'AI IDE SaaS', amount: 999999900, delivery: '60–90 days', category: 'ai', tagline: 'Cloud AI developer IDE platform (multi-tenant).', emoji: '💡', feats: ['IDE platform', 'Multi-tenant SaaS', 'AI copilot', 'Billing system'] },
+    { id: 'windows-ide', name: 'Windows IDE / Desktop App', amount: 9999900, delivery: '30–45 days', category: 'custom', tagline: 'Custom Windows desktop software or IDE for your team.', emoji: '🪟', feats: ['Windows desktop app', 'Native or Electron', 'Custom UI & workflows', 'Installer & updates'] },
     { id: 'founder-environment', name: 'Founder Environment', amount: 49999900, delivery: '14–21 days', category: 'enterprise', tagline: 'Complete dev, cloud & AI stack.', emoji: '🏗️', feats: ['Cloud setup', 'CI/CD pipeline', 'AI dev tools', 'Team onboarding'] },
     { id: 'full-ecosystem', name: 'Full Ecosystem', amount: 1499999900, delivery: '90–180 days', category: 'enterprise', tagline: 'Start-to-end product ecosystem.', emoji: '🌍', feats: ['App + Web + AI', 'Marketing & ops', 'Dedicated team', 'End-to-end delivery'] },
   ];
@@ -56,12 +57,13 @@
     return PLANS.find((p) => p.id === resolved) || PLANS[2];
   }
 
-  function formatUsd(paise) {
-    return '$' + Math.round(paise / 100).toLocaleString('en-US');
+  function formatInr(paise) {
+    return '₹' + Math.round(paise / 100).toLocaleString('en-IN');
   }
 
-  function formatInr(paise) {
-    return formatUsd(paise);
+  /** @deprecated use formatInr — kept for older callers */
+  function formatUsd(paise) {
+    return formatInr(paise);
   }
 
   window.THTWAAT_CATALOG = {
